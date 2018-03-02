@@ -1,0 +1,18 @@
+<template>
+  我的信息
+</template>
+
+<script>
+  import { View, applyStyle } from 'magix'
+
+  // applyStyle('@style.less')
+  module.exports = View.extend({
+    tmpl: '@template.html',
+    render () {
+      var me = this
+      this.updater.digest({
+        viewPath: me.owner.path,
+      })
+    }
+  })
+</script>

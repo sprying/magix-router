@@ -1,0 +1,28 @@
+<template>
+  <div mx-view="<%=viewPath%>"></div>
+</template>
+
+<script>
+  import {View} from 'magix'
+  module.exports = View.extend({
+    tmpl: '@template.html',
+    init ({viewName = 'default'}) {
+      this.name = viewName
+    },
+    render () {
+      let depth = 0
+      let owner = this.owner
+      owner.hasRouterView = true
+      while(owner = owner.parent()) {
+        if (owner.hasRouterView === true) depth++
+      }
+      let route = this.route.matched[depth]
+      this.owner.depth = depth
+      this.owner.routeUid = route.uid
+      let viewPath = route['views'][this.name]
+      this.updater.digest({
+        viewPath
+      })
+    }
+  })
+</script>

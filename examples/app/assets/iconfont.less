@@ -1,0 +1,32 @@
+@font-face {
+  font-family: 'advfont';  /* project id 65545 */
+  src: url('//at.alicdn.com/t/font_65545_aengv9qjf6ytx1or.eot');
+  src: url('//at.alicdn.com/t/font_65545_aengv9qjf6ytx1or.eot?#iefix') format('embedded-opentype'),
+  url('//at.alicdn.com/t/font_65545_aengv9qjf6ytx1or.woff') format('woff'),
+  url('//at.alicdn.com/t/font_65545_aengv9qjf6ytx1or.ttf') format('truetype'),
+  url('//at.alicdn.com/t/font_65545_aengv9qjf6ytx1or.svg#advfont') format('svg');
+}
+
+.advfont {
+  font-family:"advfont" !important;
+  font-size:16px;
+  font-style:normal;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+input[type=checkbox]:checked:after {
+  font-family: advfont;
+  content: '\e622';
+  color: #fff;
+  border-radius: 3px;
+  background-color: #FF4C00;
+  width: 100%;
+  height: 100%;
+  font-size: 14px;
+  position: absolute;
+  left: 0;
+  top: 0;
+  animation: checkbox .1s ease-out;
+  animation-fill-mode: forwards;
+}

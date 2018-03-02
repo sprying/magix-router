@@ -1,0 +1,24 @@
+<template>
+  <div class="view">
+    <div class="view-flag"><%=viewPath%><span class="flag-text">此view作为后台页面的layout</span></div>
+    <div>页面头部</div>
+    <div>
+      <router-view></router-view>
+    </div>
+    <div>页面尾部</div>
+  </div>
+</template>
+<style>
+
+</style>
+<script>
+  import {View} from 'magix'
+  module.exports = View.extend({
+    tmpl: '@template.html',
+    render () {
+      this.updater.digest({
+        viewPath: this.owner.path
+      })
+    }
+  })
+</script>

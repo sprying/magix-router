@@ -1,0 +1,12 @@
+<template>
+  <p>这是minisite内容</p>
+</template>
+<script>
+  import {View} from 'magix'
+  module.exports = View.extend({
+    tmpl: '@template.html',
+    render () {
+      this.updater.digest()
+    }
+  })
+</script>

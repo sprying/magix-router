@@ -1,0 +1,18 @@
+<template>
+  <div class="view">
+    <div class="view-flag"><%=viewPath%></div>
+    <div>行业走势</div>
+    <router-view></router-view>
+  </div>
+</template>
+<script>
+  import {View, applyStyle} from 'magix'
+  module.exports = View.extend({
+    tmpl: '@template.html',
+    render () {
+      this.updater.digest({
+        viewPath: this.owner.path
+      })
+    }
+  })
+</script>

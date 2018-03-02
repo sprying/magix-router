@@ -1,0 +1,59 @@
+<template>
+  <div style="padding: 10px;">
+    边框包围的，是一个特殊的magix view，提供了magix-router功能，具体来说，就是view里面，包含了mx-router.view标签。当页面url变化时，向mx-router.view标签填入要展示的view，可以根据传入的配置动态改变。
+  </div>
+  <div class="view">
+    <div class="view-flag"><%=viewPath%><span class="flag-text">根view</span></div>
+    <p>导航</p>
+    <ul>
+      <li>
+        <router-link to="/" cls="<%=colorBlue%>">前台页面</router-link>
+      </li>
+      <li>
+        后台页面
+        <ul>
+          <li>
+            <router-link to="/report/cpevent" cls="<%=colorBlue%>">行业走势</router-link>
+          </li>
+          <li>
+            <router-link to="/user/123" cls="<%=colorBlue%>">用户123</router-link>
+          </li>
+          <li>
+            <router-link to="/myaccount" cls="<%=colorBlue%>">我的信息（点击跳到登录）</router-link>
+          </li>
+          <li>
+            <router-link to="/report/cpevent-alias" cls="<%=colorBlue%>">行业走势链接2（指向行业走势1链接一样的内容）</router-link>
+          </li>
+          <li>
+            <router-link to="/report/cpevent-old" cls="<%=colorBlue%>">行业走势链接3（重定向到行业走势1链接）</router-link>
+          </li>
+          <li>
+            <router-link to="/report/no-exists" cls="<%=colorBlue%>" activeClass="<%=activeClass%>">链接不存在</router-link>
+          </li>
+        </ul>
+      </li>
+    </ul>
+
+    <router-view></router-view>
+  </div>
+</template>
+
+<style>
+</style>
+
+<script>
+  import { View, applyStyle } from 'magix'
+
+  // applyStyle('@style.less')
+  module.exports = View.extend({
+    tmpl: '@template.html',
+    render () {
+      var me = this
+      this.updater.digest({
+        viewPath: me.owner.path,
+        colorBlue: '@app/assets/layout.less:color-blue',
+        activeClass: '@app/assets/layout.less:link-active'
+      })
+    }
+  })
+</script>

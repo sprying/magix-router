@@ -1,0 +1,36 @@
+<template>
+  login page
+  <form>
+    <p>选择一个选项，然后点击按钮，按钮判断后，跳到不同的页面，测试js调用页面跳转</p>
+    <label>
+      <input type="radio" name="login-result" value="0">输入用户信息错误
+    </label>
+    <label>
+      <input type="radio" name="login-result" value="1">输入用户信息正确
+    </label>
+    <button type="button" mx-click="judgeNext()">判断登录OK后，返回上一页</button>
+  </form>
+</template>
+
+<script>
+  const Magix = require('magix')
+
+  module.exports = Magix.View.extend({
+    tmpl: '@template.html',
+    render () {
+      var me = this
+      this.updater.digest({
+        viewPath: me.owner.path,
+      })
+    },
+    'judgeNext<click>' (e) {
+      if ($('#' + this.id).find('[name="login-result"]:checked').val() == 1) {
+        Magix.config({'hasLogin': true})
+        this.router.push({
+          path: this.route.query.from
+        })
+      }
+    }
+  })
+
+</script>

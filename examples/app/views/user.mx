@@ -1,0 +1,20 @@
+<template>
+  <div class="menu">
+    <mx-router.link class="link" cc="查看我的报表" tag="span" to="/report/cpevent" linkCls="<%=colorBlue%>"></mx-router.link>
+  </div>
+  <div class="content">
+    用户id：<%=userId%>
+  </div>
+</template>
+<script>
+  import {View} from 'magix'
+  module.exports = View.extend({
+    tmpl: '@template.html',
+    render () {
+      this.updater.set({
+        userId: this.route.params.id,
+        colorBlue: '@app/assets/layout.less:color-blue'
+      }).digest()
+    }
+  })
+</script>
