@@ -56,9 +56,19 @@ let config = {
     })
   },
   customTagProcessor (tagInfo) {
+    const encodingMap = {
+      '<': '&lt;',
+      '>': '&gt;',
+      '"': '&quot;',
+      '&': '&amp;',
+      '\n': '&#10;',
+      '\t': '&#9;'
+    }
+    const encodedAttrWithNewLines = /<|>|"|&|\n|\t/g
+
     const tags = {
       'router-link': function (args) {
-        return `<span mx-view="app/plugins/link" view-content="${args.content}" view-cls="${args.cls}" view-to="${args.to}"></span>`
+        return `<span mx-view="app/plugins/link" view-content="${args.content}" ${(args.linkClass? 'view-linkClass="' + args.linkClass + '"' : '')} ${(args.activeClass ? 'view-activeClass="' + args.activeClass + '"' : '')} ${(args.exactActiveClass ? 'view-exactActiveClass="' + args.exactActiveClass + '"' : '')} view-to="${args.to}"></span>`
       },
       'router-view': function (args) {
         return '<div mx-view="app/plugins/view"></div>'
@@ -74,7 +84,9 @@ let config = {
           parsedAttrs[pair[0]] = pair[1].replace(/"/g, '')
         })
       }
-      parsedAttrs.content = tagInfo.content
+      // todo 转码下，不然编译时报错
+      parsedAttrs.content = tagInfo.content.replace(encodedAttrWithNewLines, match => encodingMap[match])
+      // parsedAttrs.content = tagInfo.content
       var tagTmpl = tags[tagInfo.tag](parsedAttrs)
       return tagTmpl
     }

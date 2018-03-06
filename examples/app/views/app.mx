@@ -7,28 +7,28 @@
     <p>导航</p>
     <ul>
       <li>
-        <router-link to="/" cls="<%=colorBlue%>">前台页面</router-link>
+        <router-link to="/">前台页面</router-link>
       </li>
       <li>
         后台页面
         <ul>
           <li>
-            <router-link to="/report/cpevent" cls="<%=colorBlue%>">行业走势</router-link>
+            <router-link to="/report/cpevent">行业走势</router-link>
           </li>
           <li>
-            <router-link to="/user/123" cls="<%=colorBlue%>">用户123</router-link>
+            <router-link to="/user/123"><span style="color: red;">12</span>用户123</router-link>
           </li>
           <li>
-            <router-link to="/myaccount" cls="<%=colorBlue%>">我的信息（点击跳到登录）</router-link>
+            <router-link to="/myaccount">我的信息（点击跳到登录）</router-link>
           </li>
           <li>
-            <router-link to="/report/cpevent-alias" cls="<%=colorBlue%>">行业走势链接2（指向行业走势1链接一样的内容）</router-link>
+            <router-link to="/report/cpevent-alias">行业走势链接2（指向行业走势1链接一样的内容）</router-link>
           </li>
           <li>
-            <router-link to="/report/cpevent-old" cls="<%=colorBlue%>">行业走势链接3（重定向到行业走势1链接）</router-link>
+            <router-link to="/report/cpevent-old">行业走势链接3（重定向到行业走势1链接）</router-link>
           </li>
           <li>
-            <router-link to="/report/no-exists" cls="<%=colorBlue%>" activeClass="<%=activeClass%>">链接不存在</router-link>
+            <router-link to="/report/no-exists" linkClass="<%=colorYellow%>" activeClass="<%=colorRed%>">自定义链接样式，链接不存在</router-link>
           </li>
         </ul>
       </li>
@@ -39,20 +39,26 @@
 </template>
 
 <style>
+  .color-yellow{
+    color: #ff0;
+  }
+  .color-red{
+    color: #f00;
+  }
 </style>
 
 <script>
   import { View, applyStyle } from 'magix'
 
-  // applyStyle('@style.less')
+  applyStyle('@style.less')
   module.exports = View.extend({
     tmpl: '@template.html',
     render () {
       var me = this
       this.updater.digest({
         viewPath: me.owner.path,
-        colorBlue: '@app/assets/layout.less:color-blue',
-        activeClass: '@app/assets/layout.less:link-active'
+        colorYellow: '@style.less:color-yellow',// todo magix bug  少了这行代码，还是传了""到link
+        colorRed: '@style.less:color-red'
       })
     }
   })

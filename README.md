@@ -26,9 +26,6 @@ npm run build
 
 # serve examples at localhost:8080
 npm run dev
-
-# lint & run all tests
-npm test
 ```
 
 ## License

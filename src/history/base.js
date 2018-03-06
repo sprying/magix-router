@@ -211,10 +211,12 @@ function resolveQueue (
 }
 
 function diffRoute (from, to) {
+  var queryDiffMap = {}
   var diffMap = {}
+  diffMap.query = queryDiffMap
 
-  compareBetween(from.query, to.query, diffMap)
-  compareBetween(to.query, from.query, diffMap)
+  compareBetween(from.query, to.query, queryDiffMap)
+  compareBetween(to.query, from.query, queryDiffMap)
 
   if (from.path !== to.path) {
     diffMap.path = {

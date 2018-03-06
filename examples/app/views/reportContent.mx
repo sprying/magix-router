@@ -1,12 +1,30 @@
 <template>
   <div>行业走势内容</div>
+  <p>当前页：<%=pageNo%></p>
+  <div>
+    <span style="color: blue;" mx-click="nextPage()">下一页</span>
+  </div>
 </template>
 <script>
   import {View, applyStyle} from 'magix'
   module.exports = View.extend({
     tmpl: '@template.html',
+    init () {
+      this.observeLocation([
+        'pageNo'
+      ])
+    },
     render () {
-      this.updater.digest()
+      this.updater.digest({
+        pageNo: this.route.query.pageNo
+      })
+    },
+    'nextPage<click>' (e) {
+      this.router.push({
+        query: {
+          pageNo: +(this.route.query.pageNo || 1 ) + 1
+        }
+      })
     }
   })
 </script>

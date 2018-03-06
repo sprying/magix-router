@@ -1,8 +1,11 @@
 <template>
-  <a href="<%=link%>" mx-click="goLink()" class="<%=activeClass%> <%=cls%>"><%=content%></a>
+  <a href="<%=link%>" mx-click="goLink()" class="<%=activeClass%> <%=linkClass%>"><%!content%></a>
 </template>
 
 <style>
+  .router-link{
+    color: #0066dd;
+  }
  .router-link-active {
    color: #F40;
  }
@@ -12,11 +15,21 @@
 </style>
 
 <script>
+  const encodingMap = {
+    '<': '&lt;',
+    '>': '&gt;',
+    '"': '&quot;',
+    '&': '&amp;',
+    '\n': '&#10;',
+    '\t': '&#9;'
+  }
+  const encodedAttrWithNewLines = /<|>|"|&|\n|\t/g
   const defaultOptions = {
     to: '',
     exact: false,
     append: true,
     replace: false,
+    linkClass: null,
     activeClass: null,
     exactActiveClass: null
   }
@@ -39,16 +52,22 @@
       let owner = this.owner
       owner.hasLinkView = true
 
-      const classes = {}
-      const globalActiveClass = router.options.linkActiveClas
+      const globalLinkClass = router.options.linkClass
+      const globalActiveClass = router.options.linkActiveClass
       const globalExactActiveClass = router.options.linkExactActiveClass
       // Support global empty active class
+      const linkClassFallback = globalActiveClass == null
+        ? '@style.less:router-link'
+        : globalActiveClass
       const activeClassFallback = globalActiveClass == null
         ? '@style.less:router-link-active'
         : globalActiveClass
       const exactActiveClassFallback = globalExactActiveClass == null
-        ? 'router-link-exact-active'
+        ? '@style.less:router-link-exact-active'
         : globalExactActiveClass
+      const linkClass = this.linkClass == null
+        ? linkClassFallback
+        : this.linkClass
       const activeClass = this.activeClass == null
         ? activeClassFallback
         : this.activeClass
@@ -65,7 +84,7 @@
         activeClass: this.exact
         ? isSameRoute(current, compareTarget)? exactActiveClass: ''
         : isIncludedRoute(current, compareTarget)? activeClass: '',
-        cls: this.cls
+        linkClass: linkClass,
       })
     },
     'goLink<click>' (e) {

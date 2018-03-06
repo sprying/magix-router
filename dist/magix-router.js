@@ -1627,10 +1627,12 @@ function resolveQueue (
 }
 
 function diffRoute (from, to) {
+  var queryDiffMap = {};
   var diffMap = {};
+  diffMap.query = queryDiffMap;
 
-  compareBetween(from.query, to.query, diffMap);
-  compareBetween(to.query, from.query, diffMap);
+  compareBetween(from.query, to.query, queryDiffMap);
+  compareBetween(to.query, from.query, queryDiffMap);
 
   if (from.path !== to.path) {
     diffMap.path = {
@@ -1960,12 +1962,12 @@ MagixRouter.prototype.init = function init (app) {
   }
 
   history.listen(function (changedInfo) {
-    this$1.apps.forEach(function (app) {
+    // this.apps.forEach((app) => {
       // 触发变动更新
       var Vframe = _Magix.Vframe;
       var rootVframe = Vframe.get(_Magix.config('rootId'));
       VframeUpdate(rootVframe, changedInfo, this$1.history.current);
-    });
+    // })
   });
 };
 
@@ -2106,15 +2108,15 @@ var VframeUpdate = function (vframe, changeInfo, route) {
 };
 var ViewIsObserveChanged = function (view, changeInfo) {
   var loc = view['$l'];
-  var params;
+  var query;
   if (loc.f) {
     if (loc.p && changeInfo.path) {
       return true
     }
     if (loc.k) {
-      params = changeInfo.params;
+      query = changeInfo.query;
       for (var _i = 0, _a = loc.k; _i < _a.length; _i++) {
-        if (Object.hasOwnProperty(params, _a[_i])) { return true }
+        if (query[_a[_i]]) { return true }
       }
     }
   }

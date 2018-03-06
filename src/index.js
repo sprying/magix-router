@@ -105,12 +105,12 @@ export default class MagixRouter {
     }
 
     history.listen(changedInfo => {
-      this.apps.forEach((app) => {
+      // this.apps.forEach((app) => {
         // 触发变动更新
         const Vframe = _Magix.Vframe
         const rootVframe = Vframe.get(_Magix.config('rootId'))
         VframeUpdate(rootVframe, changedInfo, this.history.current)
-      })
+      // })
     })
   }
 
@@ -257,15 +257,15 @@ const VframeUpdate = function (vframe, changeInfo, route) {
 }
 const ViewIsObserveChanged = function (view, changeInfo) {
   var loc = view['$l']
-  var params
+  var query
   if (loc.f) {
     if (loc.p && changeInfo.path) {
       return true
     }
     if (loc.k) {
-      params = changeInfo.params
+      query = changeInfo.query
       for (let _i = 0, _a = loc.k; _i < _a.length; _i++) {
-        if (Object.hasOwnProperty(params, _a[_i])) return true
+        if (query[_a[_i]]) return true
       }
     }
   }
