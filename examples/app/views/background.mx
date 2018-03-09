@@ -3,7 +3,7 @@
     <div class="view-flag"><%=viewPath%><span class="flag-text">此view作为后台页面的layout</span></div>
     <div>页面头部</div>
     <div>
-      <router-view></router-view>
+      <div router-view></div>
     </div>
     <div>页面尾部</div>
   </div>

@@ -3,6 +3,7 @@
 import Regexp from 'path-to-regexp'
 import { cleanPath } from './util/path'
 import { assert, warn } from './util/warn'
+import { _Magix } from './install'
 
 export function createRouteMap (
   routes: Array<RouteConfig>,
@@ -43,6 +44,11 @@ export function createRouteMap (
 
 let uid = 0
 
+var tag = 0
+let genViewUid = function () {
+  return '_magix-router_' + tag++
+}
+
 function addRouteRecord (
   pathList: Array<string>,
   pathMap: Dictionary<RouteRecord>,
@@ -72,10 +78,21 @@ function addRouteRecord (
     pathToRegexpOptions.sensitive = route.caseSensitive
   }
 
+  const views = route.views || {default: route.view}
+  for (let key in views) {
+    const value = views[key]
+    if (typeof value !== 'string') {
+      const guid = genViewUid()
+      _Magix.addViews(guid, value)
+      views[key] = value
+    } else {
+      views[key] = value
+    }
+  }
   const record: RouteRecord = {
     path: normalizedPath,
     regex: compileRouteRegex(normalizedPath, pathToRegexpOptions),
-    views: route.views || { default: route.view },
+    views,
     instances: {},
     name,
     parent,

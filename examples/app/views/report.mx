@@ -2,7 +2,8 @@
   <div class="view">
     <div class="view-flag"><%=viewPath%></div>
     <div>行业走势</div>
-    <router-view></router-view>
+    <div router-view name="menu"></div>
+    <div router-view name="main"></div>
   </div>
 </template>
 <script>

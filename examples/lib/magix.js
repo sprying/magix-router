@@ -3766,12 +3766,5 @@ define('magix', ['$'], function(require) {
    */
   Magix.Base = G_NOOP;
 
-
-  Magix.use = function (plugin) {
-    if (plugin && typeof plugin.install === 'function') {
-      plugin.install(Magix)
-    }
-  }
-
   return Magix;
 });

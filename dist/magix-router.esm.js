@@ -3,29 +3,86 @@
   * (c) 2018 sprying
   * @license MIT
   */
-var _Magix;
+var id = 0;
+var genid = function () {
+  return '_magix_router_uid_' + id++
+};
 
-function install (Magix) {
-  if (install.installed && _Magix === Magix) { return }
-  install.installed = true;
+/**
+ * intercept mountZone, parse dom selector [router-view] to mx-view=..., ready for next mountVframe
+ */
+function install$1 () {
+  var router = _Magix.config('router');
+  var _oldMountZone = _Magix.Vframe.prototype.mountZone;
+  _Magix.Vframe.prototype.mountZone = function (zoneId, viewInitParams) {
+    var this$1 = this;
 
-  _Magix = Magix;
+    var route = router.history.current;
+    var targets = document.querySelectorAll('#' + zoneId + ' [router-view]');
+    targets = Array.from(targets);
 
-  var ctor = function () {
-    if (!this.owner.parent()) {
-      var router = Magix.config('router');
-      router.init();
-      var route = router.history.current;
-      Magix.View.merge({
-        router: router,
-        route: route
+    var depth = 0;
+    var owner = this;
+    if (targets.length) {
+      owner.hasRouterView = true;
+      while (owner = owner.parent()) {
+        if (owner.hasRouterView === true) { depth++; }
+      }
+      var routeMatch = route.matched[depth];
+      this.depth = depth;
+      this.routeUid = routeMatch.uid;
+      this.routerViews = this.routerViews || [];
+      targets.forEach(function (filter) {
+        var viewName = filter.getAttribute('name') || 'default';
+        var generatedId = genid();
+        var viewPath = routeMatch['views'][viewName];
+        viewPath += '?_renderFrom=magix-router&_depth=' + depth + '&_viewName=' + viewName;
+        filter.setAttribute('mx-view', viewPath);
+        filter.setAttribute('id', generatedId);
+        this$1.routerViews.push({
+          elemId: generatedId,
+          name: viewName
+        });
       });
     }
+
+    _oldMountZone.call(this, zoneId, viewInitParams);
   };
-  Magix.View.merge({
-    ctor: ctor
-  });
 }
+
+/**
+ * when route change, jude if remount [router-view]
+ * @param vframe
+ */
+function update (vframe) {
+  if (vframe.hasRouterView) {
+    var router = _Magix.config('router');
+    var route = router.history.current;
+    var routerViews = vframe.routerViews;
+    var depth = vframe.depth;
+    var routeMatch = route.matched[depth];
+
+    if (routeMatch['uid'] !== vframe.routeUid) {
+      if (routerViews.length) {
+        routerViews.forEach(function (view) {
+          var name = view.name;
+          var subZoneId = view.elemId;
+          var viewPath = routeMatch.views[name];
+          var viewInitParams = {
+            '_renderFrom': 'magix-router',
+            '_depth': depth,
+            '_viewName': name
+          };
+          vframe.routeUid = routeMatch.uid;
+          vframe.unmountVframe(subZoneId);
+          vframe.mountVframe(subZoneId, viewPath, viewInitParams);
+        });
+      }
+    }
+  }
+}
+
+var ViewComponent = {install: install$1, update: update};
 
 /*  */
 
@@ -277,6 +334,152 @@ function queryIncludes (current, target) {
     }
   }
   return true
+}
+
+/*  */
+
+var cacheList = [];
+
+var installed = false;
+
+var Link = function Link (element) {
+  var router = _Magix.config('router');
+  var current = router.history.current;
+  var to = element.getAttribute('to');
+  var ref = router.resolve(to, current, true);
+  var location = ref.location;
+  var route = ref.route;
+  this.location = location;
+  this.element = element;
+  this.exact = element.hasAttribute('exact');
+  this.replace = element.hasAttribute('replace');
+
+  var globalLinkClass = router.options.linkClass;
+  var globalActiveClass = router.options.linkActiveClass;
+  var globalExactActiveClass = router.options.linkExactActiveClass;
+
+  this.linkClass = globalLinkClass? globalLinkClass: 'router-link';
+  this.activeClass = globalActiveClass ? globalActiveClass: 'router-link-active';
+  this.exactActiveClass = globalExactActiveClass? globalExactActiveClass: 'router-link-exact-active';
+  this.linkClass = element.hasAttribute('class')? element.getAttribute('class'): this.linkClass;
+  this.activeClass = element.hasAttribute('active-class') ? element.getAttribute('active-class'): this.activeClass;
+  this.exactActiveClass = element.hasAttribute('exact-active-class')? element.getAttribute('exact-active-class'): this.exactActiveClass;
+  this.compareTarget = location.path
+    ? createRoute(null, location, null, router)
+    : route;
+
+  this.bindEvents();
+  this.update();
+
+  cacheList.push(this);
+};
+
+Link.prototype.bindEvents = function bindEvents () {
+  var router = _Magix.config('router');
+  var ref = this;
+    var element = ref.element;
+    var location = ref.location;
+    var replace = ref.replace;
+  if (element.addEventListener) {
+    element.addEventListener('click', handler, false);
+  } else if (element.attachEvent) {
+    element.attachEvent("onclick", handler);
+  } else {
+    element["onclick"] = handler;
+  }
+
+  function handler (event) {
+    if (event.preventDefault) {
+      event.preventDefault();
+    } else {
+      event.returnValue = false;
+    }
+    if (replace) {
+      router.replace(location);
+    } else {
+      router.push(location);
+    }
+  }
+};
+
+Link.prototype.unbindEvents = function unbindEvents () {
+  
+};
+
+Link.prototype.update = function update () {
+  var router = _Magix.config('router');
+  var current = router.history.current;
+  var ref = this;
+    var element = ref.element;
+
+  element.className = this.linkClass + ' ' + (this.exact
+    ? isSameRoute(current, this.compareTarget)? this.exactActiveClass : ''
+    : isIncludedRoute(current, this.compareTarget)? this.activeClass : '');
+};
+
+function createLink (id) {
+  if (!installed) {
+    installed = true;
+    _Magix.applyStyle('_magix-router-link',"\n     .router-link{\n    color: #0066dd;\n    cursor:pointer;\n  }\n  .router-link:hover{\n    color:#f50;\n  }\n .router-link-active {\n   color: #F40;\n }\n  .router-link-exact-active{\n    color: #F40;\n  } \n    ");
+  }
+
+  var router = _Magix.config('router');
+  var links = document.querySelectorAll('#' + id + ' [router-link]');
+  links = Array.from(links);
+
+  links.forEach(function (element) {
+    new Link(element);
+  });
+}
+
+function update$1 () {
+  cacheList.forEach(function (link) {
+    link.update();
+  });
+}
+
+var _Magix;
+
+function install (Magix) {
+  if (install.installed && _Magix === Magix) { return }
+  install.installed = true;
+
+  _Magix = Magix;
+  var ctor = function (opts) {
+    var this$1 = this;
+
+    var router = Magix.config('router');
+    var route;
+    if (!this.owner.parent()) {
+      router.init(this);
+      route = router.history.current;
+      Magix.View.merge({
+        router: router,
+        route: route
+      });
+
+      ViewComponent.install();
+    } else {
+      route = router.history.current;
+    }
+    if (opts._renderFrom === 'magix-router') {
+      route[opts._depth]['instances'][opts['_viewName']] = this;
+    }
+
+    this.on('rendered', function (e) {
+      createLink(this$1.owner.id);
+    });
+  };
+  Magix.View.merge({
+    ctor: ctor
+  });
+
+
+  var Magix_Cfg = Magix.config();
+  Magix.addViews = function(name, promiseObj){
+    var cfgViews = Magix_Cfg.views = Magix_Cfg.views || {};
+    cfgViews[name] = promiseObj;
+  };
 }
 
 /*  */
@@ -848,6 +1051,11 @@ function createRouteMap (
 
 var uid = 0;
 
+var tag = 0;
+var genViewUid = function () {
+  return '_magix-router_' + tag++
+};
+
 function addRouteRecord (
   pathList,
   pathMap,
@@ -878,10 +1086,21 @@ function addRouteRecord (
     pathToRegexpOptions.sensitive = route.caseSensitive;
   }
 
+  var views = route.views || {default: route.view};
+  for (var key in views) {
+    var value = views[key];
+    if (typeof value !== 'string') {
+      var guid = genViewUid();
+      _Magix.addViews(guid, value);
+      views[key] = value;
+    } else {
+      views[key] = value;
+    }
+  }
   var record = {
     path: normalizedPath,
     regex: compileRouteRegex(normalizedPath, pathToRegexpOptions),
-    views: route.views || { default: route.view },
+    views: views,
     instances: {},
     name: name,
     parent: parent,
@@ -1927,7 +2146,7 @@ MagixRouter.prototype.init = function init (app) {
 
   process.env.NODE_ENV !== 'production' && assert(
     install.installed,
-    "not installed. Make sure to call `Magix.use(MagixRouter)` " +
+    "not installed. Make sure to call `MagixRouter.install(Magix)` " +
     "before creating root instance."
   );
 
@@ -1961,6 +2180,7 @@ MagixRouter.prototype.init = function init (app) {
       var Vframe = _Magix.Vframe;
       var rootVframe = Vframe.get(_Magix.config('rootId'));
       VframeUpdate(rootVframe, changedInfo, this$1.history.current);
+    update$1();
     // })
   });
 };
@@ -2072,7 +2292,7 @@ MagixRouter.isSameRoute = isSameRoute;
 MagixRouter.isIncludedRoute = isIncludedRoute;
 
 if (inBrowser && window.Magix) {
-  window.Magix.use(MagixRouter);
+  MagixRouter.install(window.Magix);
 }
 
 var VframeUpdate = function (vframe, changeInfo, route) {
@@ -2080,12 +2300,9 @@ var VframeUpdate = function (vframe, changeInfo, route) {
   var view;
   if (vframe && (view = vframe['$v']) && view['$s'] > 0) {
     var isChanged = ViewIsObserveChanged(view, changeInfo);
-    // todo
-    if (vframe.hasRouterView) {
-      if (route.matched[vframe.depth]['uid'] !== vframe.routeUid) {
-        isChanged = true;
-      }
-    }
+
+    // control updating router-view
+    ViewComponent.update(vframe);
 
     if (vframe.hasLinkView) {
       isChanged = true;
@@ -2103,6 +2320,7 @@ var VframeUpdate = function (vframe, changeInfo, route) {
 var ViewIsObserveChanged = function (view, changeInfo) {
   var loc = view['$l'];
   var query;
+  if (!loc) { return false }
   if (loc.f) {
     if (loc.p && changeInfo.path) {
       return true

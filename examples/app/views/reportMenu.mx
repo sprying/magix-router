@@ -1,0 +1,12 @@
+<template>
+  <div>menu</div>
+</template>
+<script>
+  import {View, applyStyle} from 'magix'
+  module.exports = View.extend({
+    tmpl: '@template.html',
+    render () {
+      this.updater.digest()
+    }
+  })
+</script>

@@ -7,34 +7,35 @@
     <p>导航</p>
     <ul>
       <li>
-        <router-link to="/">前台页面</router-link>
+        <span router-link to="/">前台页面</span>
       </li>
       <li>
         后台页面
         <ul>
           <li>
-            <router-link to="/report/cpevent">行业走势</router-link>
+            <span router-link to="/report/cpevent">行业走势</span>
           </li>
           <li>
-            <router-link to="/user/123"><span style="color: red;">12</span>用户123</router-link>
+            <span router-link to="/user/123"><span style="color: red;">12</span>用户123</span>
           </li>
           <li>
-            <router-link to="/myaccount">我的信息（点击跳到登录）</router-link>
+            <span router-link to="/myaccount">我的信息（点击跳到登录）</span>
           </li>
           <li>
-            <router-link to="/report/cpevent-alias">行业走势链接2（指向行业走势1链接一样的内容）</router-link>
+            <span router-link to="/report/cpevent-alias">行业走势链接2（指向行业走势1链接一样的内容）</span>
           </li>
           <li>
-            <router-link to="/report/cpevent-old">行业走势链接3（重定向到行业走势1链接）</router-link>
+            <span router-link to="/report/cpevent-old">行业走势链接3（重定向到行业走势1链接）</span>
           </li>
           <li>
-            <router-link to="/report/no-exists" linkClass="<%=colorYellow%>" activeClass="<%=colorRed%>">自定义链接样式，链接不存在</router-link>
+            <span router-link to="/report/no-exists" class="<%=colorYellow%>" active-class="<%=colorRed%>">自定义链接样式，链接不存在</span>
           </li>
         </ul>
       </li>
     </ul>
 
-    <router-view></router-view>
+    <!--<router-view></router-view>-->
+    <div router-view></div>
   </div>
 </template>
 

@@ -4,7 +4,7 @@
 const MagixRouter = require('app/plugins/magix-router.common.js')
 const Magix = require('magix')
 
-Magix.use(MagixRouter)
+MagixRouter.install(Magix)
 
 const routes = [
   {
@@ -19,12 +19,15 @@ const routes = [
         path: '/report/index',
         view: 'app/views/report',
         beforeEnter (to, from, next) {
-          next(true)
+          next()
         },
         children: [
           {
             path: '/report/cpevent',
-            view: 'app/views/reportContent',
+            views: {
+              menu: 'app/views/reportMenu',
+              main: 'app/views/reportContent'
+            },
             alias: '/report/cpevent-alias'
           }
         ]

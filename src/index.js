@@ -16,6 +16,9 @@ import type { Matcher } from './create-matcher'
 
 import { createRoute, isSameRoute, isIncludedRoute } from './util/route'
 
+import ViewComponent from './components/view'
+import { update as updateLinks} from './components/link'
+
 export default class MagixRouter {
   static install: () => void;
   static version: string;
@@ -76,7 +79,7 @@ export default class MagixRouter {
   init (app: any) {
     process.env.NODE_ENV !== 'production' && assert(
       install.installed,
-      `not installed. Make sure to call \`Magix.use(MagixRouter)\` ` +
+      `not installed. Make sure to call \`MagixRouter.install(Magix)\` ` +
       `before creating root instance.`
     )
 
@@ -110,6 +113,7 @@ export default class MagixRouter {
         const Vframe = _Magix.Vframe
         const rootVframe = Vframe.get(_Magix.config('rootId'))
         VframeUpdate(rootVframe, changedInfo, this.history.current)
+      updateLinks()
       // })
     })
   }
@@ -227,20 +231,17 @@ MagixRouter.isSameRoute = isSameRoute
 MagixRouter.isIncludedRoute = isIncludedRoute
 
 if (inBrowser && window.Magix) {
-  window.Magix.use(MagixRouter)
+  MagixRouter.install(window.Magix)
 }
 
 const VframeUpdate = function (vframe, changeInfo, route) {
   const Vframe = _Magix.Vframe
   let view
   if (vframe && (view = vframe['$v']) && view['$s'] > 0) {
-    var isChanged = ViewIsObserveChanged(view, changeInfo)
-    // todo
-    if (vframe.hasRouterView) {
-      if (route.matched[vframe.depth]['uid'] !== vframe.routeUid) {
-        isChanged = true
-      }
-    }
+    let isChanged = ViewIsObserveChanged(view, changeInfo)
+
+    // control updating router-view
+    ViewComponent.update(vframe)
 
     if (vframe.hasLinkView) {
       isChanged = true
@@ -258,6 +259,7 @@ const VframeUpdate = function (vframe, changeInfo, route) {
 const ViewIsObserveChanged = function (view, changeInfo) {
   var loc = view['$l']
   var query
+  if (!loc) return false
   if (loc.f) {
     if (loc.p && changeInfo.path) {
       return true
