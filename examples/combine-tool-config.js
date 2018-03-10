@@ -84,7 +84,7 @@ let config = {
           parsedAttrs[pair[0]] = pair[1].replace(/"/g, '')
         })
       }
-      // todo 转码下，不然编译时报错
+      // todo 这里要转码下，不然编译时报错
       parsedAttrs.content = tagInfo.content.replace(encodedAttrWithNewLines, match => encodingMap[match])
       // parsedAttrs.content = tagInfo.content
       var tagTmpl = tags[tagInfo.tag](parsedAttrs)

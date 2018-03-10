@@ -15,15 +15,6 @@
 </style>
 
 <script>
-  const encodingMap = {
-    '<': '&lt;',
-    '>': '&gt;',
-    '"': '&quot;',
-    '&': '&amp;',
-    '\n': '&#10;',
-    '\t': '&#9;'
-  }
-  const encodedAttrWithNewLines = /<|>|"|&|\n|\t/g
   const defaultOptions = {
     to: '',
     exact: false,

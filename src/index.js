@@ -258,6 +258,7 @@ const VframeUpdate = function (vframe, changeInfo, route) {
 const ViewIsObserveChanged = function (view, changeInfo) {
   var loc = view['$l']
   var query
+  if (!loc) return false
   if (loc.f) {
     if (loc.p && changeInfo.path) {
       return true
