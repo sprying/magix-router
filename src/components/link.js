@@ -4,7 +4,7 @@ import { _Magix } from '../install'
 import { createRoute, isSameRoute, isIncludedRoute } from '../util/route'
 
 
-const cacheList = []
+const cacheList: Array<Link> = []
 
 let installed = false
 
@@ -12,10 +12,10 @@ class Link {
   element: HTMLElement;
   exact: boolean;
   replace: boolean;
-  linkClass: 'router-link';
-  activeClass: 'router-link-active';
-  exactActiveClass: 'router-link-exact-active';
-  location;
+  linkClass: string;
+  activeClass: string;
+  exactActiveClass: string;
+  location: Location;
   compareTarget: Route;
 
   constructor (element: HTMLElement) {

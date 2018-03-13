@@ -1,12 +1,12 @@
 import { _Magix } from '../install'
 
-let id = 0
-const genid = function () {
-  return '_magix_router_uid_' + id++
+let uid = 0
+const genUid = function () {
+  return '_magix_router_view_uid_' + ++uid
 }
 
 /**
- * intercept mountZone, parse dom selector [router-view] to mx-view=..., ready for next mountVframe
+ * intercept Magix.Vframe.prototype.mountZone, add DOM [router-view] attribute [mx-view=...], ready for next mountVframe
  */
 function install () {
   const router = _Magix.config('router')
@@ -29,7 +29,7 @@ function install () {
       this.routerViews = this.routerViews || []
       targets.forEach(filter => {
         const viewName = filter.getAttribute('name') || 'default'
-        const generatedId = genid()
+        const generatedId = genUid()
         let viewPath = routeMatch['views'][viewName]
         viewPath += '?_renderFrom=magix-router&_depth=' + depth + '&_viewName=' + viewName
         filter.setAttribute('mx-view', viewPath)

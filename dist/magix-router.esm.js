@@ -3,13 +3,13 @@
   * (c) 2018 sprying
   * @license MIT
   */
-var id = 0;
-var genid = function () {
-  return '_magix_router_uid_' + id++
+var uid = 0;
+var genUid = function () {
+  return '_magix_router_view_uid_' + ++uid
 };
 
 /**
- * intercept mountZone, parse dom selector [router-view] to mx-view=..., ready for next mountVframe
+ * intercept Magix.Vframe.prototype.mountZone, add DOM [router-view] attribute [mx-view=...], ready for next mountVframe
  */
 function install$1 () {
   var router = _Magix.config('router');
@@ -34,7 +34,7 @@ function install$1 () {
       this.routerViews = this.routerViews || [];
       targets.forEach(function (filter) {
         var viewName = filter.getAttribute('name') || 'default';
-        var generatedId = genid();
+        var generatedId = genUid();
         var viewPath = routeMatch['views'][viewName];
         viewPath += '?_renderFrom=magix-router&_depth=' + depth + '&_viewName=' + viewName;
         filter.setAttribute('mx-view', viewPath);
@@ -420,7 +420,7 @@ Link.prototype.update = function update () {
 function createLink (id) {
   if (!installed) {
     installed = true;
-    _Magix.applyStyle('_magix-router-link',"\n     .router-link{\n    color: #0066dd;\n    cursor:pointer;\n  }\n  .router-link:hover{\n    color:#f50;\n  }\n .router-link-active {\n   color: #F40;\n }\n  .router-link-exact-active{\n    color: #F40;\n  } \n    ");
+    _Magix.applyStyle('_magix-router-link',"\n     .router-link{\n       color: #0066dd;\n       cursor:pointer;\n     }\n     .router-link:hover{\n       color:#f50;\n     }\n     .router-link-active {\n       color: #F40;\n     }\n     .router-link-exact-active{\n       color: #F40;\n     } \n    ");
   }
 
   var router = _Magix.config('router');
@@ -1049,11 +1049,11 @@ function createRouteMap (
   }
 }
 
-var uid = 0;
+var uid$1 = 0;
 
-var tag = 0;
-var genViewUid = function () {
-  return '_magix-router_' + tag++
+var viewUid = 0;
+var genPropertyViewUid = function () {
+  return '_magix-router_' + ++viewUid
 };
 
 function addRouteRecord (
@@ -1090,11 +1090,11 @@ function addRouteRecord (
   for (var key in views) {
     var value = views[key];
     if (typeof value !== 'string') {
-      var guid = genViewUid();
-      _Magix.addViews(guid, value);
-      views[key] = value;
+      var guid$1 = genPropertyViewUid();
+      _Magix.addViews(guid$1, value);
+      views[key] = guid$1;
     } else {
-      views[key] = value;
+      views[key] = guid;
     }
   }
   var record = {
@@ -1108,7 +1108,7 @@ function addRouteRecord (
     redirect: route.redirect,
     beforeEnter: route.beforeEnter,
     meta: route.meta || {},
-    uid: uid++
+    uid: uid$1++
   };
 
   if (route.children) {

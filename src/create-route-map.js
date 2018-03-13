@@ -44,9 +44,9 @@ export function createRouteMap (
 
 let uid = 0
 
-var tag = 0
-let genViewUid = function () {
-  return '_magix-router_' + tag++
+let viewUid = 0
+let genPropertyViewUid = function () {
+  return '_magix-router_' + ++viewUid
 }
 
 function addRouteRecord (
@@ -82,11 +82,11 @@ function addRouteRecord (
   for (let key in views) {
     const value = views[key]
     if (typeof value !== 'string') {
-      const guid = genViewUid()
+      const guid = genPropertyViewUid()
       _Magix.addViews(guid, value)
-      views[key] = value
+      views[key] = guid
     } else {
-      views[key] = value
+      views[key] = guid
     }
   }
   const record: RouteRecord = {

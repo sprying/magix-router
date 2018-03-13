@@ -1,3 +1,6 @@
+* 2018-03-13
+1. fix bugs and typo
+
 * 2018-03-10
 1. support webpack loader and code spliting function of import
 2. only provide one file, remove the two files of view.mx and link.mx
