@@ -24,7 +24,6 @@ class Link {
     const to = element.getAttribute('to')
     const { location, route, href } = router.resolve(to, current, true)
     this.location = location
-    this.element = element
     this.exact = element.hasAttribute('exact')
     this.replace = element.hasAttribute('replace')
 
@@ -41,6 +40,13 @@ class Link {
     this.compareTarget = location.path
       ? createRoute(null, location, null, router)
       : route
+
+    const genLink = document.createElement('a')
+    genLink.setAttribute('href', 'javascript:void(0);')
+    genLink.innerText = element.innerText
+    element.parentElement.replaceChild(genLink, element)
+
+    this.element = genLink
 
     this.bindEvents()
     this.update()
@@ -120,7 +126,7 @@ export function createLink (id) {
 
   const router = _Magix.config('router')
   const current = router.history.current
-  let links = document.querySelectorAll('#' + id + ' [router-link]')
+  let links = document.querySelectorAll('#' + id + ' router-link')
   links = Array.from(links)
 
   links.forEach(function (element) {

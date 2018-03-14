@@ -86,7 +86,7 @@ function addRouteRecord (
       _Magix.addViews(guid, value)
       views[key] = guid
     } else {
-      views[key] = guid
+      views[key] = value
     }
   }
   const record: RouteRecord = {

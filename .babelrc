@@ -1,3 +1,4 @@
 {
-  "presets": ["es2015", "flow-vue"]
+  "presets": ["es2015", "flow-vue"],
+  "plugins": ["syntax-dynamic-import"]
 }

@@ -1090,11 +1090,11 @@ function addRouteRecord (
   for (var key in views) {
     var value = views[key];
     if (typeof value !== 'string') {
-      var guid$1 = genPropertyViewUid();
-      _Magix.addViews(guid$1, value);
-      views[key] = guid$1;
-    } else {
+      var guid = genPropertyViewUid();
+      _Magix.addViews(guid, value);
       views[key] = guid;
+    } else {
+      views[key] = value;
     }
   }
   var record = {

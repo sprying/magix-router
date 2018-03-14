@@ -1,0 +1,23 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8"/>
+  <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1"/>
+  <link rel="shortcut icon" href="https://alp.alicdn.com/1489861526147.png" type="image/x-icon"/>
+  <title>magix-router demo</title>
+  <script src="//g-assets.daily.taobao.net??/cell/lib-zepto/0.0.2/index.js,cell/lib-magix/0.0.15/index-debug.js"></script>
+</head>
+<body>
+<div id="app">
+  <h2>Hello,App!</h2>
+  <p>
+    <router-link to="/hello.htm">hello</router-link>
+    <router-link to="/nice.htm">fine</router-link>
+  </p>
+
+  <!-- 可以增加子view渲染 -->
+  <router-view></router-view>
+</div>
+<script id="boot" type="text/javascript" src="/__build__/bundle.js"></script>
+</body>
+</html>

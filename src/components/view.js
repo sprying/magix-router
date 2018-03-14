@@ -13,7 +13,7 @@ function install () {
   const _oldMountZone = _Magix.Vframe.prototype.mountZone
   _Magix.Vframe.prototype.mountZone = function (zoneId, viewInitParams) {
     const route = router.history.current
-    let targets = document.querySelectorAll('#' + zoneId + ' [router-view]')
+    let targets = document.querySelectorAll('#' + zoneId + ' router-view')
     targets = Array.from(targets)
 
     let depth = 0
@@ -25,15 +25,19 @@ function install () {
       }
       const routeMatch = route.matched[depth]
       this.depth = depth
-      this.routeUid = routeMatch.uid
+      this.routeUid = routeMatch? routeMatch.uid: ''
       this.routerViews = this.routerViews || []
       targets.forEach(filter => {
         const viewName = filter.getAttribute('name') || 'default'
         const generatedId = genUid()
-        let viewPath = routeMatch['views'][viewName]
-        viewPath += '?_renderFrom=magix-router&_depth=' + depth + '&_viewName=' + viewName
-        filter.setAttribute('mx-view', viewPath)
-        filter.setAttribute('id', generatedId)
+        const wrapper = document.createElement('div')
+        if (routeMatch) {
+          let viewPath = routeMatch? routeMatch['views'][viewName]: ''
+          viewPath += '?_renderFrom=magix-router&_depth=' + depth + '&_viewName=' + viewName
+          wrapper.setAttribute('mx-view', viewPath)
+        }
+        wrapper.setAttribute('id', generatedId)
+        filter.parentElement.replaceChild(wrapper, filter)
         this.routerViews.push({
           elemId: generatedId,
           name: viewName

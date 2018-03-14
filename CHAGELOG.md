@@ -1,3 +1,8 @@
+* 2018-03-14
+1. change writing method of using link or view
+2. support not match route
+3. add webpack example
+
 * 2018-03-13
 1. fix bugs and typo
 
