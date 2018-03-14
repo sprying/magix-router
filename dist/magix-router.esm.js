@@ -1,5 +1,5 @@
 /*!
-  * magix-router v0.0.1
+  * magix-router v0.0.2
   * (c) 2018 sprying
   * @license MIT
   */
@@ -18,7 +18,7 @@ function install$1 () {
     var this$1 = this;
 
     var route = router.history.current;
-    var targets = document.querySelectorAll('#' + zoneId + ' [router-view]');
+    var targets = document.querySelectorAll('#' + zoneId + ' router-view');
     targets = Array.from(targets);
 
     var depth = 0;
@@ -30,15 +30,19 @@ function install$1 () {
       }
       var routeMatch = route.matched[depth];
       this.depth = depth;
-      this.routeUid = routeMatch.uid;
+      this.routeUid = routeMatch? routeMatch.uid: '';
       this.routerViews = this.routerViews || [];
       targets.forEach(function (filter) {
         var viewName = filter.getAttribute('name') || 'default';
         var generatedId = genUid();
-        var viewPath = routeMatch['views'][viewName];
-        viewPath += '?_renderFrom=magix-router&_depth=' + depth + '&_viewName=' + viewName;
-        filter.setAttribute('mx-view', viewPath);
-        filter.setAttribute('id', generatedId);
+        var wrapper = document.createElement('div');
+        if (routeMatch) {
+          var viewPath = routeMatch? routeMatch['views'][viewName]: '';
+          viewPath += '?_renderFrom=magix-router&_depth=' + depth + '&_viewName=' + viewName;
+          wrapper.setAttribute('mx-view', viewPath);
+        }
+        wrapper.setAttribute('id', generatedId);
+        filter.parentElement.replaceChild(wrapper, filter);
         this$1.routerViews.push({
           elemId: generatedId,
           name: viewName
@@ -350,7 +354,6 @@ var Link = function Link (element) {
   var location = ref.location;
   var route = ref.route;
   this.location = location;
-  this.element = element;
   this.exact = element.hasAttribute('exact');
   this.replace = element.hasAttribute('replace');
 
@@ -367,6 +370,13 @@ var Link = function Link (element) {
   this.compareTarget = location.path
     ? createRoute(null, location, null, router)
     : route;
+
+  var genLink = document.createElement('a');
+  genLink.setAttribute('href', 'javascript:void(0);');
+  genLink.innerText = element.innerText;
+  element.parentElement.replaceChild(genLink, element);
+
+  this.element = genLink;
 
   this.bindEvents();
   this.update();
@@ -424,7 +434,7 @@ function createLink (id) {
   }
 
   var router = _Magix.config('router');
-  var links = document.querySelectorAll('#' + id + ' [router-link]');
+  var links = document.querySelectorAll('#' + id + ' router-link');
   links = Array.from(links);
 
   links.forEach(function (element) {
@@ -2285,7 +2295,7 @@ function createHref (base, fullPath, mode) {
 }
 
 MagixRouter.install = install;
-MagixRouter.version = '0.0.1';
+MagixRouter.version = '0.0.2';
 
 MagixRouter.createRoute = createRoute;
 MagixRouter.isSameRoute = isSameRoute;
