@@ -42,7 +42,13 @@ export function install (Magix) {
   const extend = Magix.View.extend
   Magix.View.extend = function (props, statics) {
     props = props || {}
-    props.ctor = ctor
+    if (props.ctor) {
+      props.ctor = function () {
+        const args = [].slice.apply(arguments)
+        ctor.apply(this, args)
+        props.ctor.apply(this, args)
+      }
+    }
     props.observeLocation = function(params) {
       const loc = this._observeTag
       let isObservePath

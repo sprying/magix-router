@@ -10,7 +10,7 @@ module.exports = {
     const fullDir = path.join(__dirname, dir)
     const entry = path.join(fullDir, 'app.js')
     if (fs.statSync(fullDir).isDirectory() && fs.existsSync(entry)) {
-      entries[dir] = ['es6-promise/auto', entry]
+      entries[dir] = entry
     }
 
     return entries
@@ -26,7 +26,7 @@ module.exports = {
   resolve: {
     alias: {
       'magix-router': path.join(__dirname, '../..', 'src'),
-      src: path.resolve(__dirname, 'src/'),
+      custom: path.resolve(__dirname, 'custom/'),
     }
   },
 
@@ -35,7 +35,7 @@ module.exports = {
       {
         test: /\.(?:mx|js)$/, // js or mx 后缀
         include: [
-          path.resolve(__dirname, 'src/views'),//只处理app目录
+          path.resolve(__dirname, 'custom'),//只处理app目录
         ],
         use: [{
           loader: 'magix-loader',
