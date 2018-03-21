@@ -4,7 +4,8 @@ import MagixRouter from 'magix-router'
 // 1. Use plugin.
 // This installs <router-view> and <router-link>,
 // and injects router and route to all child views
-MagixRouter.install(window.Magix)
+// MagixRouter.install(window.Magix)
+// because of Magix exporting global, there is no need to execute
 
 // 2. Define route views
 const Home = Magix.View.extend({

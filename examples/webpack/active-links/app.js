@@ -1,7 +1,5 @@
 import MagixRouter from 'magix-router'
 
-MagixRouter.install(window.Magix)
-
 const Home = Magix.View.extend({
   tmpl: '<div><h2>Home</h2></div>',
   render () {
@@ -29,7 +27,6 @@ const Users = Magix.View.extend({
   render () {
     this.updater.digest()
   }
-
 })
 
 const User = Magix.View.extend({

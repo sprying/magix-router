@@ -1,7 +1,5 @@
 import MagixRouter from 'magix-router'
 
-MagixRouter.install(window.Magix)
-
 const Foo = Magix.View.extend({
   tmpl: '<div>foo</div>',
   render: function(){

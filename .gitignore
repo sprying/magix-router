@@ -9,3 +9,5 @@ dist/*.gz
 dist/*.map
 explorations
 docs/_book
+cdn
+build/release-cdn.sh

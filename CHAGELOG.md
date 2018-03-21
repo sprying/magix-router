@@ -1,3 +1,6 @@
+* 2018-03-21 # v0.0.6.beta
+1. change examples
+
 * 2018-03-21 # v0.0.5
 1. fix bug of router-view support unmatched view
 2. fix bug of seajs loader
