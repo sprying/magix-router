@@ -38,7 +38,7 @@ class Link {
     const globalActiveClass = router.options.linkActiveClass
     const globalExactActiveClass = router.options.linkExactActiveClass
 
-    this.linkClass = globalLinkClass? globalLinkClass: 'router-link'
+    this.linkClass = globalLinkClass? globalLinkClass: ''
     this.activeClass = globalActiveClass ? globalActiveClass: 'router-link-active'
     this.exactActiveClass = globalExactActiveClass? globalExactActiveClass: 'router-link-exact-active'
     this.linkClass = element.hasAttribute('class')? element.getAttribute('class'): this.linkClass
@@ -113,7 +113,7 @@ class Link {
     const { element } = this
 
     element.className = this.linkClass + ' ' + (this.exact
-      ? isSameRoute(current, this.compareTarget)? this.exactActiveClass : ''
+      ? isSameRoute(current, this.compareTarget)? this.exactActiveClass + ' ' + this.activeClass: ''
       : isIncludedRoute(current, this.compareTarget)? this.activeClass : '')
   }
 }

@@ -34,12 +34,14 @@ function install () {
         if (routeMatch) {
           let viewPath = routeMatch? routeMatch['views'][viewName]: ''
 
-          if (typeof viewPath !== 'string') {
-            _Magix.addView(generatedId, viewPath)
-            viewPath = generatedId
+          if (viewPath) {
+            if (typeof viewPath !== 'string') {
+              _Magix.addView(generatedId, viewPath)
+              viewPath = generatedId
+            }
+            viewPath += '?_renderFrom=magix-router&_depth=' + depth + '&_viewName=' + viewName
+            wrapper.setAttribute('mx-view', viewPath)
           }
-          viewPath += '?_renderFrom=magix-router&_depth=' + depth + '&_viewName=' + viewName
-          wrapper.setAttribute('mx-view', viewPath)
         }
         wrapper.setAttribute('id', generatedId)
         filter.parentElement.replaceChild(wrapper, filter)
@@ -55,7 +57,7 @@ function install () {
 }
 
 /**
- * when route change, jude if remount [router-view]
+ * when route change, determine if you need to render again
  * @param vframe
  */
 function update (vframe) {
@@ -72,6 +74,8 @@ function update (vframe) {
           const name = view.name
           const subZoneId = view.elemId
           let viewPath = routeMatch.views[name]
+
+          if (!viewPath) return
           const viewInitParams = {
             '_renderFrom': 'magix-router',
             '_depth': depth,

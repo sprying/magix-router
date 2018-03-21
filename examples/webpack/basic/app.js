@@ -6,7 +6,7 @@ import MagixRouter from 'magix-router'
 // and injects router and route to all child views
 MagixRouter.install(window.Magix)
 
-// 2. Define route components
+// 2. Define route views
 const Home = Magix.View.extend({
   tmpl: '<div><h2>Home</h2></div>',
   render () {

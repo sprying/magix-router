@@ -1,5 +1,5 @@
 /*!
-  * magix-router v0.0.3
+  * magix-router v0.0.4
   * (c) 2018 sprying
   * @license MIT
   */
@@ -41,12 +41,14 @@ function install$1 () {
         if (routeMatch) {
           var viewPath = routeMatch? routeMatch['views'][viewName]: '';
 
-          if (typeof viewPath !== 'string') {
-            _Magix.addView(generatedId, viewPath);
-            viewPath = generatedId;
+          if (viewPath) {
+            if (typeof viewPath !== 'string') {
+              _Magix.addView(generatedId, viewPath);
+              viewPath = generatedId;
+            }
+            viewPath += '?_renderFrom=magix-router&_depth=' + depth + '&_viewName=' + viewName;
+            wrapper.setAttribute('mx-view', viewPath);
           }
-          viewPath += '?_renderFrom=magix-router&_depth=' + depth + '&_viewName=' + viewName;
-          wrapper.setAttribute('mx-view', viewPath);
         }
         wrapper.setAttribute('id', generatedId);
         filter.parentElement.replaceChild(wrapper, filter);
@@ -62,7 +64,7 @@ function install$1 () {
 }
 
 /**
- * when route change, jude if remount [router-view]
+ * when route change, determine if you need to render again
  * @param vframe
  */
 function update (vframe) {
@@ -79,6 +81,8 @@ function update (vframe) {
           var name = view.name;
           var subZoneId = view.elemId;
           var viewPath = routeMatch.views[name];
+
+          if (!viewPath) { return }
           var viewInitParams = {
             '_renderFrom': 'magix-router',
             '_depth': depth,
@@ -379,7 +383,7 @@ var Link = function Link (element) {
   var globalActiveClass = router.options.linkActiveClass;
   var globalExactActiveClass = router.options.linkExactActiveClass;
 
-  this.linkClass = globalLinkClass? globalLinkClass: 'router-link';
+  this.linkClass = globalLinkClass? globalLinkClass: '';
   this.activeClass = globalActiveClass ? globalActiveClass: 'router-link-active';
   this.exactActiveClass = globalExactActiveClass? globalExactActiveClass: 'router-link-exact-active';
   this.linkClass = element.hasAttribute('class')? element.getAttribute('class'): this.linkClass;
@@ -448,7 +452,7 @@ Link.prototype.update = function update () {
     var element = ref.element;
 
   element.className = this.linkClass + ' ' + (this.exact
-    ? isSameRoute(current, this.compareTarget)? this.exactActiveClass : ''
+    ? isSameRoute(current, this.compareTarget)? this.exactActiveClass + ' ' + this.activeClass: ''
     : isIncludedRoute(current, this.compareTarget)? this.activeClass : '');
 };
 
@@ -1754,7 +1758,7 @@ function resolveAsyncComponents (matched) {
         hasAsync = true;
         pending++;
         _Magix.use(def, function (cls) {
-          match.components[key] = cls;
+          match.views[key] = cls;
           pending--;
           if (pending <= 0) {
             next();
@@ -2548,7 +2552,7 @@ function createHref (base, fullPath, mode) {
 }
 
 MagixRouter.install = install;
-MagixRouter.version = '0.0.3';
+MagixRouter.version = '0.0.4';
 
 MagixRouter.createRoute = createRoute;
 MagixRouter.isSameRoute = isSameRoute;

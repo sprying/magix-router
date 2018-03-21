@@ -23,7 +23,6 @@
     - [base](api/options.md#base)
     - [linkActiveClass](api/options.md#linkactiveclass)
     - [linkExactActiveClass](api/options.md#linkexactactiveclass)
-    - [scrollBehavior](api/options.md#scrollbehavior)
     - [parseQuery / stringifyQuery](api/options.md#parsequery--stringifyquery)
     - [fallback](api/options.md#fallback)
   - [Router 实例](api/router-instance.md)

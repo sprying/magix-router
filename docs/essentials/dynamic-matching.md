@@ -1,6 +1,6 @@
 # 动态路由匹配
 
-我们经常需要把某种模式匹配到的所有路由，全都映射到同个view。例如，我们有一个 `User` view，对于所有 ID 各不相同的用户，都要使用这个组件来渲染。那么，我们可以在  `magix-router` 的路由路径中使用『动态路径参数』（dynamic segment）来达到这个效果：
+我们经常需要把某种模式匹配到的所有路由，全都映射到同个view。例如，我们有一个 `User` view，对于所有 ID 各不相同的用户，都要使用这个视图来渲染。那么，我们可以在  `magix-router` 的路由路径中使用『动态路径参数』（dynamic segment）来达到这个效果：
 
 ``` js
 define('app/user', function(require, exports, module) {
@@ -23,12 +23,12 @@ const router = new MagixRouter({
 现在呢，像 `/user/foo` 和 `/user/bar` 都将映射到相同的路由。
 
 一个『路径参数』使用冒号 `:` 标记。当匹配到一个路由时，参数值会被设置到
- `this.route.params`，可以在每个组件内使用。于是，我们可以更新 `User` 的模板，输出当前用户的 ID：
+ `this.route.params`，可以在每个视图内使用。于是，我们可以更新 `User` 的模板，输出当前用户的 ID：
 
 ``` js
 define('app/user', function(require, exports, module) {
   module.exports = Magix.View.extend({
-    tmpl: '<div>User <%=route.params.id%></div>',
+    tmpl: '<div>User <%= route.params.id %></div>',
     render: function(){
       this.updater.digest({
         route: this.route
@@ -51,7 +51,7 @@ define('app/user', function(require, exports, module) {
 
 ### 响应路由参数的变化
 
-提醒一下，当使用路由参数时，例如从 `/user/foo` 导航到 `/user/bar`，**原来的组件实例会被复用**。因为两个路由都渲染同个组件，比起销毁再创建，复用则显得更加高效。**不过，这也意味着组件的生命周期钩子不会再被调用，只会重新调用 `render` 方法**。
+提醒一下，当使用路由参数时，例如从 `/user/foo` 导航到 `/user/bar`，**原来的视图实例会被复用**。因为两个路由都渲染同个组件，比起销毁再创建，复用则显得更加高效。**不过，这也意味着组件的生命周期钩子不会再被调用，需要调用 `observeLocation` 方法，可以查看 [导航守卫](../advanced/navigation-guards.md#observelocation) 的详情说明，path变化时会重新调用 `render` 方法**。
 
 复用组件时，想对路由参数的变化作出响应的话，你可以使用  `beforeRouteUpdate` 守卫：
 

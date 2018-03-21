@@ -31,7 +31,7 @@
 ### JavaScript
 
 ```js
-// 0. 如果使用模块化机制编程，导入Magix和MagixRouter，要调用 MagixRouter.install(Magix)
+// 0. 如果使用模块化机制编程，导入Magix和MagixRouter，要调用 MagixRouter.install(window.Magix)
 
 // 1. 定义（路由）组件。
 // 可以从其他文件 import 进来
@@ -92,13 +92,13 @@ seajs.use('app/main')
 export default Magix.View.extend({
   'goBack<click>' () {
     window.history.length > 1
-      ? this.$router.go(-1)
-      : this.$router.push('/')
+      ? this.router.go(-1)
+      : this.router.push('/')
   }
 })
 ```
 
-该文档通篇都常使用 `router` 实例。留意一下 `this.router` 和 `router` 使用起来完全一样。我们使用 `this.router` 的原因是我们并不想在每个独立需要封装路由的组件中都导入路由。
+该文档通篇都常使用 `router` 实例。留意一下 `this.router` 和 `router` 使用起来完全一样。我们使用 `this.router` 的原因是我们并不想在视图中都导入路由。
 
 你可以看看这个[在线的](https://codepen.io/sprying/pen/MVaNJj)例子。
 

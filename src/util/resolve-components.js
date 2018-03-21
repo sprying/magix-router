@@ -56,7 +56,7 @@ export function resolveAsyncComponents (matched: Array<RouteRecord>): Function {
         hasAsync = true
         pending++
         _Magix.use(def, function (cls) {
-          match.components[key] = cls
+          match.views[key] = cls
           pending--
           if (pending <= 0) {
             next()

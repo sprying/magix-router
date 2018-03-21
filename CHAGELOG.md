@@ -1,4 +1,10 @@
-* 2018-03-21
+* 2018-03-21 # v0.0.5
+1. fix bug of router-view support unmatched view
+2. fix bug of seajs loader
+3. modify docs
+4. about router-link of `router-link-active` and `router-link-exact-active` can both existing
+
+* 2018-03-21 # v0.0.4
 1. add documents
 2. add some kinds of webpack examples
 3. router-link support attribute `:to`

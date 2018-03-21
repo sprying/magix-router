@@ -110,4 +110,4 @@ const router = new MagixRouter({
 })
 ```
 
-提供以上案例的可运行代码请[移步这里](https://jsfiddle.net/sprying/na0f7kzn/)。
+提供以上案例的可运行代码请[移步这里](https://codepen.io/sprying/pen/gemeNY)。

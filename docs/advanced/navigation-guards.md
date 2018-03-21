@@ -142,7 +142,7 @@ Magix.View.extend({
 })
 ```
 
-url的path变化时，重新调用render。注意，当params变化时，比如从 `/user/one` 切换到 `/user/two` ，要调用下这个。
+上面是url的path变化时，重新调用render。注意，当path中params变化时，比如从 `/user/one` 切换到 `/user/two` ，也要这样使用。
 
 ```js
 Magix.View.extend({
