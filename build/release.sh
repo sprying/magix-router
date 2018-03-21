@@ -21,5 +21,5 @@ then
   npm publish
 
   # publish cdn
-  source ./release-cdn.sh
+  source ./build/release-cdn.sh
 fi
