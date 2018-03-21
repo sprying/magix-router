@@ -33,6 +33,7 @@ export default class MagixRouter {
   matcher: Matcher;
   fallback: boolean;
   beforeHooks: Array<?NavigationGuard>;
+  resolveHooks: Array<?NavigationGuard>;
   afterHooks: Array<?AfterNavigationHook>;
 
   constructor (options: RouterOptions = {}) {
@@ -40,6 +41,7 @@ export default class MagixRouter {
     this.apps = []
     this.options = options
     this.beforeHooks = []
+    this.resolveHooks = []
     this.afterHooks = []
     this.matcher = createMatcher(options.routes || [], this)
 
@@ -120,6 +122,10 @@ export default class MagixRouter {
 
   beforeEach (fn: Function): Function {
     return registerHook(this.beforeHooks, fn)
+  }
+
+  beforeResolve (fn: Function): Function {
+    return registerHook(this.resolveHooks, fn)
   }
 
   afterEach (fn: Function): Function {
@@ -257,7 +263,7 @@ const VframeUpdate = function (vframe, changeInfo, route) {
   }
 }
 const ViewIsObserveChanged = function (view, changeInfo) {
-  var loc = view['$l']
+  var loc = view._observeTag
   var query
   if (!loc) return false
   if (loc.f) {

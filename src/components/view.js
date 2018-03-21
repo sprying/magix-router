@@ -33,6 +33,11 @@ function install () {
         const wrapper = document.createElement('div')
         if (routeMatch) {
           let viewPath = routeMatch? routeMatch['views'][viewName]: ''
+
+          if (typeof viewPath !== 'string') {
+            _Magix.addView(generatedId, viewPath)
+            viewPath = generatedId
+          }
           viewPath += '?_renderFrom=magix-router&_depth=' + depth + '&_viewName=' + viewName
           wrapper.setAttribute('mx-view', viewPath)
         }
@@ -61,16 +66,21 @@ function update (vframe) {
     const depth = vframe.depth
     const routeMatch = route.matched[depth]
 
-    if (routeMatch['uid'] !== vframe.routeUid) {
+    if (routeMatch && (routeMatch['uid'] !== vframe.routeUid)) {
       if (routerViews.length) {
         routerViews.forEach(function (view) {
           const name = view.name
           const subZoneId = view.elemId
-          const viewPath = routeMatch.views[name]
+          let viewPath = routeMatch.views[name]
           const viewInitParams = {
             '_renderFrom': 'magix-router',
             '_depth': depth,
             '_viewName': name
+          }
+          if (typeof viewPath !== 'string') {
+            const generatedId = genUid()
+            _Magix.addView(generatedId, viewPath)
+            viewPath = generatedId
           }
           vframe.routeUid = routeMatch.uid
           vframe.unmountVframe(subZoneId)

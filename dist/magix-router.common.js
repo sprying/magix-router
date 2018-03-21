@@ -1,5 +1,5 @@
 /*!
-  * magix-router v0.0.2
+  * magix-router v0.0.3
   * (c) 2018 sprying
   * @license MIT
   */
@@ -40,6 +40,11 @@ function install$1 () {
         var wrapper = document.createElement('div');
         if (routeMatch) {
           var viewPath = routeMatch? routeMatch['views'][viewName]: '';
+
+          if (typeof viewPath !== 'string') {
+            _Magix.addView(generatedId, viewPath);
+            viewPath = generatedId;
+          }
           viewPath += '?_renderFrom=magix-router&_depth=' + depth + '&_viewName=' + viewName;
           wrapper.setAttribute('mx-view', viewPath);
         }
@@ -68,7 +73,7 @@ function update (vframe) {
     var depth = vframe.depth;
     var routeMatch = route.matched[depth];
 
-    if (routeMatch['uid'] !== vframe.routeUid) {
+    if (routeMatch && (routeMatch['uid'] !== vframe.routeUid)) {
       if (routerViews.length) {
         routerViews.forEach(function (view) {
           var name = view.name;
@@ -79,6 +84,11 @@ function update (vframe) {
             '_depth': depth,
             '_viewName': name
           };
+          if (typeof viewPath !== 'string') {
+            var generatedId = genUid();
+            _Magix.addView(generatedId, viewPath);
+            viewPath = generatedId;
+          }
           vframe.routeUid = routeMatch.uid;
           vframe.unmountVframe(subZoneId);
           vframe.mountVframe(subZoneId, viewPath, viewInitParams);
@@ -346,15 +356,21 @@ function queryIncludes (current, target) {
 
 var cacheList = [];
 
-var installed = false;
-
 var Link = function Link (element) {
   var router = _Magix.config('router');
   var current = router.history.current;
   var to = element.getAttribute('to');
+  var colonTo = element.getAttribute(':to');
+  if (colonTo) {
+    function genToData (data) {
+      return data
+    }
+    to = new Function('genToData', 'return genToData(' + colonTo + ')')(genToData);
+  }
   var ref = router.resolve(to, current, true);
   var location = ref.location;
   var route = ref.route;
+  var href = ref.href;
   this.location = location;
   this.exact = element.hasAttribute('exact');
   this.replace = element.hasAttribute('replace');
@@ -373,9 +389,16 @@ var Link = function Link (element) {
     ? createRoute(null, location, null, router)
     : route;
 
-  var genLink = document.createElement('a');
-  genLink.setAttribute('href', 'javascript:void(0);');
-  genLink.innerText = element.innerText;
+  var tag = element.getAttribute('tag');
+
+  var genLink;
+  if ( !tag || tag === 'a' ) {
+    genLink = document.createElement('a');
+    genLink.setAttribute('href', href);
+  } else {
+    genLink = document.createElement(tag);
+  }
+  genLink.innerHTML = element.innerHTML;
   element.parentElement.replaceChild(genLink, element);
 
   this.element = genLink;
@@ -430,11 +453,6 @@ Link.prototype.update = function update () {
 };
 
 function createLink (id) {
-  if (!installed) {
-    installed = true;
-    _Magix.applyStyle('_magix-router-link',"\n     .router-link{\n       color: #0066dd;\n       cursor:pointer;\n     }\n     .router-link:hover{\n       color:#f50;\n     }\n     .router-link-active {\n       color: #F40;\n     }\n     .router-link-exact-active{\n       color: #F40;\n     } \n    ");
-  }
-
   var router = _Magix.config('router');
   var links = document.querySelectorAll('#' + id + ' router-link');
   links = Array.from(links);
@@ -474,23 +492,38 @@ function install (Magix) {
     } else {
       route = router.history.current;
     }
+
+    this._observeTag = {
+      k: []
+    };
+
     if (opts._renderFrom === 'magix-router') {
-      route[opts._depth]['instances'][opts['_viewName']] = this;
+      route.matched[opts._depth]['instances'][opts['_viewName']] = this;
     }
 
     this.on('rendered', function (e) {
       createLink(this$1.owner.id);
     });
   };
-  Magix.View.merge({
-    ctor: ctor
-  });
 
-
-  var Magix_Cfg = Magix.config();
-  Magix.addViews = function(name, promiseObj){
-    var cfgViews = Magix_Cfg.views = Magix_Cfg.views || {};
-    cfgViews[name] = promiseObj;
+  var extend = Magix.View.extend;
+  Magix.View.extend = function (props, statics) {
+    props = props || {};
+    props.ctor = ctor;
+    props.observeLocation = function(params) {
+      var loc = this._observeTag;
+      var isObservePath;
+      if (typeof params === 'object' && params.toString() === '[object Object]') {
+        isObservePath = params.path;
+        params = params.params;
+      }
+      loc.f = 1;
+      loc.p = isObservePath;
+      if (params) {
+        loc.k = (params + '').split(',');
+      }
+    };
+    return extend.call(this, props, statics)
   };
 }
 
@@ -1063,11 +1096,6 @@ function createRouteMap (
 
 var uid$1 = 0;
 
-var viewUid = 0;
-var genPropertyViewUid = function () {
-  return '_magix-router_' + ++viewUid
-};
-
 function addRouteRecord (
   pathList,
   pathMap,
@@ -1098,17 +1126,20 @@ function addRouteRecord (
     pathToRegexpOptions.sensitive = route.caseSensitive;
   }
 
-  var views = route.views || {default: route.view};
-  for (var key in views) {
-    var value = views[key];
-    if (typeof value !== 'string') {
-      var guid = genPropertyViewUid();
-      _Magix.addViews(guid, value);
-      views[key] = guid;
-    } else {
-      views[key] = value;
-    }
-  }
+  var views;
+  // if (route.views || route.view ) {
+    views = route.views || {default: route.view};
+    // for (let key in views) {
+    //   const value = views[key]
+    //   if (typeof value !== 'string') {
+    //     const guid = genPropertyViewUid()
+    //     _Magix.addView(guid, value)
+    //     views[key] = guid
+    //   } else {
+    //     views[key] = value
+    //   }
+    // }
+  // }
   var record = {
     path: normalizedPath,
     regex: compileRouteRegex(normalizedPath, pathToRegexpOptions),
@@ -1670,6 +1701,115 @@ function runQueue (queue, fn, cb) {
 
 /*  */
 
+function resolveAsyncComponents (matched) {
+  return function (to, from, next) {
+    var hasAsync = false;
+    var pending = 0;
+    var error = null;
+
+    flatMapComponents(matched, function (def, _, match, key) {
+      // if it's a function and doesn't have cid attached,
+      // assume it's an async component resolve function.
+      // we are not using Vue's default async resolving mechanism because
+      // we want to halt the navigation until the incoming component has been
+      // resolved.
+      if (typeof def === 'function' && def.extend === undefined) {
+        hasAsync = true;
+        pending++;
+
+        var resolve = once(function (resolvedDef) {
+          if (isESModule(resolvedDef)) {
+            resolvedDef = resolvedDef.default;
+          }
+          match.views[key] = resolvedDef;
+          pending--;
+          if (pending <= 0) {
+            next();
+          }
+        });
+
+        var reject = once(function (reason) {
+          var msg = "Failed to resolve async component " + key + ": " + reason;
+          "development" !== 'production' && warn(false, msg);
+          if (!error) {
+            error = isError(reason)
+              ? reason
+              : new Error(msg);
+            next(error);
+          }
+        });
+
+        var res;
+        try {
+          res = def(resolve, reject);
+        } catch (e) {
+          reject(e);
+        }
+        if (res) {
+          if (typeof res.then === 'function') {
+            res.then(resolve, reject);
+          }
+        }
+      } else if (typeof def === 'string') {
+        hasAsync = true;
+        pending++;
+        _Magix.use(def, function (cls) {
+          match.components[key] = cls;
+          pending--;
+          if (pending <= 0) {
+            next();
+          }
+        });
+      }
+    });
+
+    if (!hasAsync) { next(); }
+  }
+}
+
+function flatMapComponents (
+  matched,
+  fn
+) {
+  return flatten(matched.map(function (m) {
+    return Object.keys(m.views).map(function (key) { return fn(
+      m.views[key],
+      m.instances[key],
+      m, key
+    ); })
+  }))
+}
+
+function flatten (arr) {
+  return Array.prototype.concat.apply([], arr)
+}
+
+var hasSymbol =
+  typeof Symbol === 'function' &&
+  typeof Symbol.toStringTag === 'symbol';
+
+function isESModule (obj) {
+  return obj.__esModule || (hasSymbol && obj[Symbol.toStringTag] === 'Module')
+}
+
+// in Webpack 2, require.ensure now also returns a Promise
+// so the resolve/reject functions may get called an extra time
+// if the user uses an arrow function shorthand that happens to
+// return that Promise.
+function once (fn) {
+  var called = false;
+  return function () {
+    var args = [], len = arguments.length;
+    while ( len-- ) args[ len ] = arguments[ len ];
+
+    if (called) { return }
+    called = true;
+    return fn.apply(this, args)
+  }
+}
+
+/*  */
+
 var History = function History (router, base) {
   this.router = router;
   this.base = normalizeBase(base);
@@ -1751,13 +1891,21 @@ History.prototype.confirmTransition = function confirmTransition (route, onCompl
   }
 
   var ref = resolveQueue(this.current.matched, route.matched);
+    var updated = ref.updated;
+    var deactivated = ref.deactivated;
     var activated = ref.activated;
 
   var queue = [].concat(
+    // in-component leave guards
+    extractLeaveGuards(deactivated),
     // global before hooks
     this.router.beforeHooks,
+    // in-component update hooks
+    extractUpdateHooks(updated),
     // in-config enter guards
-    activated.map(function (m) { return m.beforeEnter; })
+    activated.map(function (m) { return m.beforeEnter; }),
+    // async components
+    resolveAsyncComponents(activated)
   );
 
   this.pending = route;
@@ -1796,11 +1944,20 @@ History.prototype.confirmTransition = function confirmTransition (route, onCompl
   };
 
   runQueue(queue, iterator, function () {
-    if (this$1.pending !== route) {
-      return abort()
-    }
-    this$1.pending = null;
-    onComplete(route);
+    var postEnterCbs = [];
+    var isValid = function () { return this$1.current === route; };
+    // wait until async components are resolved before
+    // extracting in-component enter guards
+    var enterGuards = extractEnterGuards(activated, postEnterCbs, isValid);
+    var queue = enterGuards.concat(this$1.router.resolveHooks);
+    runQueue(queue, iterator, function () {
+      if (this$1.pending !== route) {
+        return abort()
+      }
+      this$1.pending = null;
+      onComplete(route);
+      
+    });
   });
 };
 
@@ -1848,6 +2005,95 @@ function resolveQueue (
     updated: next.slice(0, i),
     activated: next.slice(i),
     deactivated: current.slice(i)
+  }
+}
+
+function extractGuards (
+  records,
+  name,
+  bind,
+  reverse
+) {
+  var guards = flatMapComponents(records, function (def, instance, match, key) {
+    var guard = def && extractGuard(def, name);
+    if (guard) {
+      return Array.isArray(guard)
+        ? guard.map(function (guard) { return bind(guard, instance, match, key); })
+        : bind(guard, instance, match, key)
+    }
+  });
+  return flatten(reverse ? guards.reverse() : guards)
+}
+
+function extractGuard (
+  def,
+  key
+) {
+  return def.prototype[key]
+}
+
+function extractLeaveGuards (deactivated) {
+  return extractGuards(deactivated, 'beforeRouteLeave', bindGuard, true)
+}
+
+function extractUpdateHooks (updated) {
+  return extractGuards(updated, 'beforeRouteUpdate', bindGuard)
+}
+
+function bindGuard (guard, instance) {
+  if (instance) {
+    return function boundRouteGuard () {
+      return guard.apply(instance, arguments)
+    }
+  }
+}
+
+function extractEnterGuards (
+  activated,
+  cbs,
+  isValid
+) {
+  return extractGuards(activated, 'beforeRouteEnter', function (guard, _, match, key) {
+    return bindEnterGuard(guard, match, key, cbs, isValid)
+  })
+}
+
+function bindEnterGuard (
+  guard,
+  match,
+  key,
+  cbs,
+  isValid
+) {
+  return function routeEnterGuard (to, from, next) {
+    return guard(to, from, function (cb) {
+      next(cb);
+      if (typeof cb === 'function') {
+        cbs.push(function () {
+          // #750
+          // if a router-view is wrapped with an out-in transition,
+          // the instance may not have been registered at this time.
+          // we will need to poll for registration until current route
+          // is no longer valid.
+          poll(cb, match.instances, key, isValid);
+        });
+      }
+    })
+  }
+}
+
+function poll (
+  cb, // somehow flow cannot infer this is a function
+  instances,
+  key,
+  isValid
+) {
+  if (instances[key]) {
+    cb(instances[key]);
+  } else if (isValid()) {
+    setTimeout(function () {
+      poll(cb, instances, key, isValid);
+    }, 16);
   }
 }
 
@@ -2115,6 +2361,7 @@ var MagixRouter = function MagixRouter (options) {
   this.apps = [];
   this.options = options;
   this.beforeHooks = [];
+  this.resolveHooks = [];
   this.afterHooks = [];
   this.matcher = createMatcher(options.routes || [], this);
 
@@ -2199,6 +2446,10 @@ MagixRouter.prototype.init = function init (app) {
 
 MagixRouter.prototype.beforeEach = function beforeEach (fn) {
   return registerHook(this.beforeHooks, fn)
+};
+
+MagixRouter.prototype.beforeResolve = function beforeResolve (fn) {
+  return registerHook(this.resolveHooks, fn)
 };
 
 MagixRouter.prototype.afterEach = function afterEach (fn) {
@@ -2297,7 +2548,7 @@ function createHref (base, fullPath, mode) {
 }
 
 MagixRouter.install = install;
-MagixRouter.version = '0.0.2';
+MagixRouter.version = '0.0.3';
 
 MagixRouter.createRoute = createRoute;
 MagixRouter.isSameRoute = isSameRoute;
@@ -2330,7 +2581,7 @@ var VframeUpdate = function (vframe, changeInfo, route) {
   }
 };
 var ViewIsObserveChanged = function (view, changeInfo) {
-  var loc = view['$l'];
+  var loc = view._observeTag;
   var query;
   if (!loc) { return false }
   if (loc.f) {

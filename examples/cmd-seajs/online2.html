@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Title</title>
+</head>
+<body>
+<script src="//unpkg.com/seajs@3.0.2/dist/sea.js"></script>
+<script src="//g.alicdn.com??/cell/lib-zepto/0.0.2/index.js,cell/lib-magix/0.0.15/index-debug.js"></script>
+<script src="//unpkg.com/magix-router/dist/magix-router.js"></script>
+
+<div id="app">
+  <p>
+    <router-link to="/user/foo">/user/foo</router-link>
+    <router-link to="/user/foo/profile">/user/foo/profile</router-link>
+    <router-link to="/user/foo/posts">/user/foo/posts</router-link>
+  </p>
+  <router-view></router-view>
+</div>
+
+<script>
+  const User = Magix.View.extend({
+    tmpl: `
+     <div class="user">
+      <h2>User <%= route.params.id %></h2>
+      <router-view></router-view>
+    </div>
+  `,
+    render() {
+      this.updater.digest({
+        route: this.route
+      })
+    }
+  })
+
+  const UserHome = Magix.View.extend({
+    tmpl: `
+		<div>Home</div>
+  `,
+    render() {
+      this.updater.digest()
+    }
+  })
+
+  const UserProfile = Magix.View.extend({
+    tmpl: `
+		<div>Profile</div>
+  `,
+    render() {
+      this.updater.digest()
+    }
+  })
+
+  const UserPosts = Magix.View.extend({
+    tmpl: `
+		<div>Posts</div>
+  `,
+    render() {
+      this.updater.digest()
+    }
+  })
+
+  const router = new MagixRouter({
+    routes: [{
+      path: '/user/:id',
+      view: User,
+      children: [
+        // UserHome will be rendered inside User's <router-view>
+        // when /user/:id is matched
+        {
+          path: '',
+          view: UserHome
+        },
+
+        // UserProfile will be rendered inside User's <router-view>
+        // when /user/:id/profile is matched
+        {
+          path: 'profile',
+          view: UserProfile
+        },
+
+        // UserPosts will be rendered inside User's <router-view>
+        // when /user/:id/posts is matched
+        {
+          path: 'posts',
+          view: UserPosts
+        }
+      ]
+    }]
+  })
+
+  Magix.boot({
+    rootId: 'app',
+    router
+  })
+
+</script>
+</body>
+</html>

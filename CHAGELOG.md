@@ -1,3 +1,13 @@
+* 2018-03-21
+1. add documents
+2. add some kinds of webpack examples
+3. router-link support attribute `:to`
+4. router-link support custom tag
+5. router-link remove default a style
+6. router-view support unmatched view
+7. magix-router supports more navigationGuard
+8. magix-router enhance magix functions of `observeLocation`
+
 * 2018-03-14
 1. change writing method of using link or view
 2. support not match route

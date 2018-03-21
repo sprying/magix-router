@@ -78,17 +78,20 @@ function addRouteRecord (
     pathToRegexpOptions.sensitive = route.caseSensitive
   }
 
-  const views = route.views || {default: route.view}
-  for (let key in views) {
-    const value = views[key]
-    if (typeof value !== 'string') {
-      const guid = genPropertyViewUid()
-      _Magix.addViews(guid, value)
-      views[key] = guid
-    } else {
-      views[key] = value
-    }
-  }
+  let views
+  // if (route.views || route.view ) {
+    views = route.views || {default: route.view}
+    // for (let key in views) {
+    //   const value = views[key]
+    //   if (typeof value !== 'string') {
+    //     const guid = genPropertyViewUid()
+    //     _Magix.addView(guid, value)
+    //     views[key] = guid
+    //   } else {
+    //     views[key] = value
+    //   }
+    // }
+  // }
   const record: RouteRecord = {
     path: normalizedPath,
     regex: compileRouteRegex(normalizedPath, pathToRegexpOptions),

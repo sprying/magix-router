@@ -21,7 +21,14 @@ class Link {
   constructor (element: HTMLElement) {
     const router = _Magix.config('router')
     const current = router.history.current
-    const to = element.getAttribute('to')
+    let to = element.getAttribute('to')
+    let colonTo = element.getAttribute(':to')
+    if (colonTo) {
+      function genToData (data) {
+        return data
+      }
+      to = new Function('genToData', 'return genToData(' + colonTo + ')')(genToData)
+    }
     const { location, route, href } = router.resolve(to, current, true)
     this.location = location
     this.exact = element.hasAttribute('exact')
@@ -41,9 +48,16 @@ class Link {
       ? createRoute(null, location, null, router)
       : route
 
-    const genLink = document.createElement('a')
-    genLink.setAttribute('href', 'javascript:void(0);')
-    genLink.innerText = element.innerText
+    const tag = element.getAttribute('tag')
+
+    let genLink
+    if ( !tag || tag === 'a' ) {
+      genLink = document.createElement('a')
+      genLink.setAttribute('href', href)
+    } else {
+      genLink = document.createElement(tag)
+    }
+    genLink.innerHTML = element.innerHTML
     element.parentElement.replaceChild(genLink, element)
 
     this.element = genLink
@@ -105,25 +119,6 @@ class Link {
 }
 
 export function createLink (id) {
-  if (!installed) {
-    installed = true
-    _Magix.applyStyle('_magix-router-link',`
-     .router-link{
-       color: #0066dd;
-       cursor:pointer;
-     }
-     .router-link:hover{
-       color:#f50;
-     }
-     .router-link-active {
-       color: #F40;
-     }
-     .router-link-exact-active{
-       color: #F40;
-     } 
-    `)
-  }
-
   const router = _Magix.config('router')
   const current = router.history.current
   let links = document.querySelectorAll('#' + id + ' router-link')

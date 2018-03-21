@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<link rel="stylesheet" href="/global.css">
+<script src="//g.alicdn.com??/cell/lib-zepto/0.0.2/index.js,cell/lib-magix/0.0.15/index-debug.js"></script>
+<a href="/">&larr; Examples index</a>
+<div id="app">
+  <h1>Route Alias</h1>
+  <ul>
+    <li><router-link to="/root-alias">
+      /root-alias (renders /root)
+    </router-link></li>
+
+    <li><router-link to="/foo">
+      /foo (renders /home/foo)
+    </router-link></li>
+
+    <li><router-link to="/home/bar-alias">
+      /home/bar-alias (renders /home/bar)
+    </router-link></li>
+
+    <li><router-link to="/baz">
+      /baz (renders /home/baz)
+    </router-link></li>
+
+    <li><router-link to="/home/baz-alias">
+      /home/baz-alias (renders /home/baz)
+    </router-link></li>
+
+    <li><router-link to="/home">
+      /home (renders /home/default)
+    </router-link></li>
+
+    <li><router-link to="/home/nested-alias/foo">
+      /home/nested-alias/foo (renders /home/nested/foo)
+    </router-link></li>
+  </ul>
+  <router-view class="view"></router-view>
+</div>
+<script src="/__build__/shared.js"></script>
+<script src="/__build__/route-alias.js"></script>

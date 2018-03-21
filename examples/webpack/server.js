@@ -17,12 +17,13 @@ app.use(webpackDevMiddleware(webpack(WebpackConfig), {
 const fs = require('fs')
 const path = require('path')
 
+fs.readdirSync(__dirname).forEach(file => {
+  if (fs.statSync(path.join(__dirname, file)).isDirectory()) {
+    app.use(rewrite('/' + file + '/*', '/' + file + '/index.html'))
+  }
+})
 
 app.use(express.static(__dirname))
-
-app.use('*', function (req, res) {
-  res.sendFile(path.join(__dirname, 'index.html'))
-})
 
 const port = process.env.PORT || 8080
 module.exports = app.listen(port, () => {

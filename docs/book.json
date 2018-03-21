@@ -1,0 +1,20 @@
+{
+  "title": "magix-router",
+  "gitbook": ">3.0.0",
+  "plugins": ["edit-link", "theme-vuejs", "-fontsettings", "github"],
+  "pluginsConfig": {
+    "edit-link": {
+      "base": "https://github.com/sprying/magix-router/edit/dev/docs",
+      "label": "Edit This Page"
+    },
+    "github": {
+      "url": "https://github.com/sprying/magix-router/"
+    }
+  },
+  "links": {
+    "sharing": {
+      "facebook": false,
+      "twitter": false
+    }
+  }
+}
