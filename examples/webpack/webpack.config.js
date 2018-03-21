@@ -35,7 +35,7 @@ module.exports = {
       {
         test: /\.(?:mx|js)$/, // js or mx 后缀
         include: [
-          path.resolve(__dirname, 'custom'),//只处理app目录
+          path.resolve(__dirname, 'custom/views'),//只处理app目录
         ],
         use: [{
           loader: 'magix-loader',

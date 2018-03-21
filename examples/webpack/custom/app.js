@@ -5,6 +5,7 @@ import router from './router.js'
 
 __webpack_public_path__ = '/__build__/'
 
+debugger
 Magix.boot({
   rootId: 'app',
   router

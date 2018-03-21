@@ -1,3 +1,8 @@
+* 2018-03-22
+1. fix using magix ctor bug
+2. modify docs
+3. add example
+
 * 2018-03-21 # v0.0.6.beta
 1. change examples
 

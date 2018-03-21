@@ -10,14 +10,13 @@
 <script src="/path/to/magix-router.js"></script>
 ```
 
-和无线场景下webpack版本的magix一起引入方式
+无线场景下webpack版本的 `magix-router` 引入
 
 ```html
-<script src="https://unpkg.com/seajs@3.0.2/dist/sea.js"></script>
-<!--模块加载器-->
-<script src="https://g.alicdn.com/??/cell/lib-zepto/0.0.2/index.js,cell/lib-magix/0.0.15/index-debug.js"></script>
-<!--zepto库，webpack版本magix，magix必须依赖第三方库-->
-<script src="https://unpkg.com/magix-router/dist/magix-router.js"></script>
+<script src="https://g.alicdn.com/cell/lib-zepto/0.0.2/index.js"></script>
+<!--magix必须依赖第三方库-->
+<script src="https://g.alicdn.com/cell/lib-magix/0.0.15/index-debug.js"></script>
+<script src="https://g.alicdn.com/cell/lib-router/0.0.8/index.js"></script>
 ```
 
 ### NPM

@@ -512,9 +512,17 @@ function install (Magix) {
 
   var extend = Magix.View.extend;
   Magix.View.extend = function (props, statics) {
+    var priCtor = props && props.ctor;
     props = props || {};
-    props.ctor = ctor;
-    props.observeLocation = function(params) {
+
+    props.ctor = function () {
+      var args = [].slice.apply(arguments);
+      ctor.apply(this, args);
+      if (priCtor) {
+        priCtor.apply(this, args);
+      }
+    };
+    props.observeLocation = function (params) {
       var loc = this._observeTag;
       var isObservePath;
       if (typeof params === 'object' && params.toString() === '[object Object]') {

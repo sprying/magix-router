@@ -14,6 +14,6 @@ const routes = [{
 }]
 
 export default new MagixRouter({
-  mode: 'history',
+  mode: 'hash',
   routes
 })

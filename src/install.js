@@ -1,5 +1,5 @@
 import ViewComponent from './components/view'
-import {createLink} from './components/link'
+import { createLink } from './components/link'
 
 export let _Magix
 
@@ -41,23 +41,25 @@ export function install (Magix) {
 
   const extend = Magix.View.extend
   Magix.View.extend = function (props, statics) {
+    const priCtor = props && props.ctor
     props = props || {}
-    if (props.ctor) {
-      props.ctor = function () {
-        const args = [].slice.apply(arguments)
-        ctor.apply(this, args)
-        props.ctor.apply(this, args)
+
+    props.ctor = function () {
+      const args = [].slice.apply(arguments)
+      ctor.apply(this, args)
+      if (priCtor) {
+        priCtor.apply(this, args)
       }
     }
-    props.observeLocation = function(params) {
+    props.observeLocation = function (params) {
       const loc = this._observeTag
       let isObservePath
       if (typeof params === 'object' && params.toString() === '[object Object]') {
         isObservePath = params.path
-        params = params.params;
+        params = params.params
       }
       loc.f = 1
-      loc.p = isObservePath;
+      loc.p = isObservePath
       if (params) {
         loc.k = (params + '').split(',')
       }
