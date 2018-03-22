@@ -103,7 +103,8 @@ function addRouteRecord (
     redirect: route.redirect,
     beforeEnter: route.beforeEnter,
     meta: route.meta || {},
-    uid: uid++
+    uid: uid++,
+    components: {}
   }
 
   if (route.children) {

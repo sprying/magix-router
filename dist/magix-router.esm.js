@@ -1161,7 +1161,8 @@ function addRouteRecord (
     redirect: route.redirect,
     beforeEnter: route.beforeEnter,
     meta: route.meta || {},
-    uid: uid$1++
+    uid: uid$1++,
+    components: {}
   };
 
   if (route.children) {
@@ -1731,7 +1732,7 @@ function resolveAsyncComponents (matched) {
           if (isESModule(resolvedDef)) {
             resolvedDef = resolvedDef.default;
           }
-          match.views[key] = resolvedDef;
+          match.components[key] = resolvedDef;
           pending--;
           if (pending <= 0) {
             next();
@@ -1764,12 +1765,15 @@ function resolveAsyncComponents (matched) {
         hasAsync = true;
         pending++;
         _Magix.use(def, function (cls) {
-          match.views[key] = cls;
+          // match.views[key] = cls
+          match.components[key] = cls;
           pending--;
           if (pending <= 0) {
             next();
           }
         });
+      } else {
+        match.components[key] = def;
       }
     });
 
@@ -1783,7 +1787,7 @@ function flatMapComponents (
 ) {
   return flatten(matched.map(function (m) {
     return Object.keys(m.views).map(function (key) { return fn(
-      m.views[key],
+      m.components[key],
       m.instances[key],
       m, key
     ); })

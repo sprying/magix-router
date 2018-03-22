@@ -1,3 +1,7 @@
+* 2018-03-22 # v0.0.9
+1. solve magix cmd without method of Magix.addView
+2. modify docs
+
 * 2018-03-22
 1. fix using magix ctor bug
 2. modify docs

@@ -23,7 +23,7 @@ export function resolveAsyncComponents (matched: Array<RouteRecord>): Function {
           if (isESModule(resolvedDef)) {
             resolvedDef = resolvedDef.default
           }
-          match.views[key] = resolvedDef
+          match.components[key] = resolvedDef
           pending--
           if (pending <= 0) {
             next()
@@ -56,12 +56,15 @@ export function resolveAsyncComponents (matched: Array<RouteRecord>): Function {
         hasAsync = true
         pending++
         _Magix.use(def, function (cls) {
-          match.views[key] = cls
+          // match.views[key] = cls
+          match.components[key] = cls
           pending--
           if (pending <= 0) {
             next()
           }
         })
+      } else {
+        match.components[key] = def
       }
     })
 
@@ -75,7 +78,7 @@ export function flatMapComponents (
 ): Array<?Function> {
   return flatten(matched.map(m => {
     return Object.keys(m.views).map(key => fn(
-      m.views[key],
+      m.components[key],
       m.instances[key],
       m, key
     ))

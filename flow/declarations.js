@@ -74,6 +74,8 @@ declare type RouteRecord = {
   beforeEnter: ?NavigationGuard;
   meta: any;
   props: boolean | Object | Function | Dictionary<boolean | Object | Function>;
+  uid: string;
+  components: Dictionary<any>;
 }
 
 declare type Location = {

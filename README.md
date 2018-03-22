@@ -1,6 +1,6 @@
 # magix-router
 
-> This is magix-router 0.0.1 which works only with Magix 3.0.
+> This is magix-router which works only with Magix 3.0.
 
 ### Introduction
 
@@ -27,6 +27,9 @@ npm run build
 # serve examples at localhost:8080
 npm run dev
 ```
+
+### documatation
+see <https://sprying.github.io/magix-router/>
 
 ## License
 

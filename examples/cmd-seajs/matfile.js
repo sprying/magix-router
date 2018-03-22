@@ -19,7 +19,7 @@ const indexPatterns = [/^(\/(\?.+)?|\/index.html(\?.+)?)$/]
 mat.task('pushState', function () {
   mat.url([/^((?!\.(css|less|js|html|ico|swf)).)*$/])
   .rewrite([
-    [/(\/.*)+/, '/examples/index.html']
+    [/(\/.*)+/, '/examples/cmd-seajs/index.html']
   ])
 })
 
