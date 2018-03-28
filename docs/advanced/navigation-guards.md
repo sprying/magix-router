@@ -81,8 +81,8 @@ const router = new MagixRouter({
 - `beforeRouteLeave`
 
 ``` js
-const Foo = {
-  template: `...`,
+const Foo = Magix.View.extend({
+  tmpl: `...`,
   beforeRouteEnter (to, from, next) {
     // 在渲染该组件的对应路由被 confirm 前调用
     // 不！能！获取组件实例 `this`
@@ -98,12 +98,12 @@ const Foo = {
     // 导航离开该组件的对应路由时调用
     // 可以访问组件实例 `this`
   }
-}
+})
 ```
 
 `beforeRouteEnter` 守卫 **不能** 访问 `this`，因为守卫在导航确认前被调用,因此即将登场的新组件还没被创建。
 
-对于 `beforeRouteUpdate` 和 `beforeRouteLeave` 来说，`this` 已经可用了，所以**不支持**传递回调，因为没有必要了。
+对于 `beforeRouteUpdate` 和 `beforeRouteLeave` 来说，`this` 已经可用了。
 
 ```js
 beforeRouteUpdate (to, from, next) {
@@ -156,7 +156,7 @@ Magix.View.extend({
   // ...
 })
 ```
-url的query的 `page` 、 `pageSize` 参数变化时，通过提前调用observeLocation，触发重新调用render。
+通过提前调用observeLocation，当url的query的 `page` 、 `pageSize` 参数变化时，触发重新调用 `render` 。
 
 ```js
 Magix.View.extend({
