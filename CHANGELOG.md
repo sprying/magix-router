@@ -1,3 +1,7 @@
+* 2018-05-12 # v0.0.10
+1. transfer innerHTML's content of the router-view tag to replacement tag div[mx-view=...]
+2. modify docs
+
 * 2018-03-22 # v0.0.9
 1. solve magix cmd without method of Magix.addView
 2. modify docs

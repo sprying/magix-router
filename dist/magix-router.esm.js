@@ -9,7 +9,7 @@ var genUid = function () {
 };
 
 /**
- * intercept Magix.Vframe.prototype.mountZone, add DOM [router-view] attribute [mx-view=...], ready for next mountVframe
+ * intercept Magix.Vframe.prototype.mountZone, router-view DOM add attribute [mx-view=...] for next mountVframe
  */
 function install$1 () {
   var router = _Magix.config('router');
@@ -21,37 +21,44 @@ function install$1 () {
     var targets = document.querySelectorAll('#' + zoneId + ' router-view');
     targets = Array.from(targets);
 
-    var depth = 0;
-    var owner = this;
     if (targets.length) {
+      // depth of router-view in DOM
+      var depth = 0;
+      var owner = this;
       owner.hasRouterView = true;
       while (owner = owner.parent()) {
         if (owner.hasRouterView === true) { depth++; }
       }
       var routeMatch = route.matched[depth];
       this.depth = depth;
-      this.routeUid = routeMatch? routeMatch.uid: '';
+      this.routeUid = routeMatch? routeMatch.uid : '';
       this.routerViews = this.routerViews || [];
-      targets.forEach(function (filter) {
-        var viewName = filter.getAttribute('name') || 'default';
+      targets.forEach(function (oldViewElm) {
+        var viewName = oldViewElm.getAttribute('name') || 'default';
         var generatedId = genUid();
-        var wrapper = document.createElement('div');
+        var elmId = oldViewElm.id || genUid();
+        var viewElm = document.createElement('div');
         if (routeMatch) {
-          var viewPath = routeMatch? routeMatch['views'][viewName]: '';
+          var viewPath = routeMatch? routeMatch['views'][viewName] : '';
 
           if (viewPath) {
             if (typeof viewPath !== 'string') {
               _Magix.addView(generatedId, viewPath);
               viewPath = generatedId;
             }
+
             viewPath += '?_renderFrom=magix-router&_depth=' + depth + '&_viewName=' + viewName;
-            wrapper.setAttribute('mx-view', viewPath);
+            viewElm.setAttribute('mx-view', viewPath);
           }
         }
-        wrapper.setAttribute('id', generatedId);
-        filter.parentElement.replaceChild(wrapper, filter);
+
+        viewElm.setAttribute('id', elmId);
+
+        viewElm.innerHTML = oldViewElm.innerHTML;
+
+        oldViewElm.parentElement.replaceChild(viewElm, oldViewElm);
         this$1.routerViews.push({
-          elemId: generatedId,
+          elemId: elmId,
           name: viewName
         });
       });
@@ -62,7 +69,7 @@ function install$1 () {
 }
 
 /**
- * when route change, determine if you need to render again
+ * when route change, determine if render again
  * @param vframe
  */
 function update (vframe) {
@@ -92,6 +99,11 @@ function update (vframe) {
             viewPath = generatedId;
           }
           vframe.routeUid = routeMatch.uid;
+
+          // for developer debug
+          var fullPath = viewPath + '?_renderFrom=magix-router&_depth=' + depth + '&_viewName=' + name;
+          document.getElementById(subZoneId).setAttribute('mx-view', fullPath);
+
           vframe.unmountVframe(subZoneId);
           vframe.mountVframe(subZoneId, viewPath, viewInitParams);
         });
@@ -2575,7 +2587,7 @@ if (inBrowser && window.Magix) {
 var VframeUpdate = function (vframe, changeInfo, route) {
   var Vframe = _Magix.Vframe;
   var view;
-  if (vframe && (view = vframe['$v']) && view['$s'] > 0) {
+  if (vframe && (view = vframe['$v'])) {
     var isChanged = ViewIsObserveChanged(view, changeInfo);
 
     // control updating router-view

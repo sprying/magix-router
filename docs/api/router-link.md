@@ -82,6 +82,13 @@
   <li>foo</li>
   ```
 
+- **class**
+
+ - 类型: `string`
+ - 默认值: 为空
+
+ 设置 CSS 类名
+
 - **active-class**
 
   - 类型: `string`
@@ -89,6 +96,27 @@
   - 默认值: `"router-link-active"`
 
   设置 链接激活时使用的 CSS 类名。默认值可以通过路由的构造选项 `linkActiveClass` 来全局配置。
+
+  ** 有关链接激活的判断逻辑 **
+
+  router-link 设置成激活的两种情况
+
+  1. 如果link 里的url跟 当前页面路由的url一致
+
+  2. link 里的url是 当前页面路由的url的某个片段，则当前 link 也会设置激活 状态
+
+  实际业务中，如果页面对应的菜单、页面业务逻辑上的父级菜单都要激活，如果它们菜单的 path 符合
+
+  ```
+  父 view path: [view parent level]
+
+  子 view path: [view parent level]/[view child level]
+  ```
+
+  router 会自动激活父、子菜单，将 CSS 类名 设置成 active-class
+
+  但是如果 父 view path 不符合上面 path 规则，那么不会自动激活 父 view router-link。要在 父 view router-link 标签上，需要激活的话，要自己写判断逻辑，将激活的class设置到 router-link 的 class属性 上。
+
 
 - **exact**
 
