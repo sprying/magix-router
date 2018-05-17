@@ -1,3 +1,6 @@
+* 2018-05-17 # v0.0.11
+1. fix bug
+
 * 2018-05-12 # v0.0.10
 1. transfer innerHTML's content of the router-view tag to replacement tag div[mx-view=...]
 2. modify docs

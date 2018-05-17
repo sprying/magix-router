@@ -9,9 +9,9 @@ const genUid = function () {
  * intercept Magix.Vframe.prototype.mountZone, router-view DOM add attribute [mx-view=...] for next mountVframe
  */
 function install () {
+  const _oldMountZone = _Magix.Vframe.prototype.mountZone
   _Magix.Vframe.prototype.mountZone = function (zoneId, viewInitParams) {
     const router = _Magix.config('router')
-    const _oldMountZone = _Magix.Vframe.prototype.mountZone
     const route = router.history.current
     let targets = document.querySelectorAll('#' + zoneId + ' router-view')
     targets = Array.from(targets)
