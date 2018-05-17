@@ -1,5 +1,5 @@
 /*!
-  * magix-router v0.0.9
+  * magix-router v0.0.10
   * (c) 2018 sprying
   * @license MIT
   */
@@ -18,11 +18,11 @@ var genUid = function () {
  * intercept Magix.Vframe.prototype.mountZone, router-view DOM add attribute [mx-view=...] for next mountVframe
  */
 function install$1 () {
-  var router = _Magix.config('router');
-  var _oldMountZone = _Magix.Vframe.prototype.mountZone;
   _Magix.Vframe.prototype.mountZone = function (zoneId, viewInitParams) {
     var this$1 = this;
 
+    var router = _Magix.config('router');
+    var _oldMountZone = _Magix.Vframe.prototype.mountZone;
     var route = router.history.current;
     var targets = document.querySelectorAll('#' + zoneId + ' router-view');
     targets = Array.from(targets);
@@ -38,7 +38,7 @@ function install$1 () {
       var routeMatch = route.matched[depth];
       this.depth = depth;
       this.routeUid = routeMatch? routeMatch.uid : '';
-      this.routerViews = this.routerViews || [];
+      this.routerViews = [];
       targets.forEach(function (oldViewElm) {
         var viewName = oldViewElm.getAttribute('name') || 'default';
         var generatedId = genUid();
@@ -2580,7 +2580,7 @@ function createHref (base, fullPath, mode) {
 }
 
 MagixRouter.install = install;
-MagixRouter.version = '0.0.9';
+MagixRouter.version = '0.0.10';
 
 MagixRouter.createRoute = createRoute;
 MagixRouter.isSameRoute = isSameRoute;
