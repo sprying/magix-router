@@ -8,7 +8,6 @@ export function install (Magix) {
   install.installed = true
 
   _Magix = Magix
-  const me = this
 
   const ctor = function (opts) {
     const router = Magix.config('router')

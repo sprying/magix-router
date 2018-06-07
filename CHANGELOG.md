@@ -1,3 +1,7 @@
+* 2018-06-07 # v0.0.12
+1. fix bug
+ when build，being surrounded with 'use strict;',use define function in if statement is valid
+
 * 2018-05-17 # v0.0.11
 1. fix bug
 

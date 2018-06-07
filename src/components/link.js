@@ -23,10 +23,10 @@ class Link {
     const current = router.history.current
     let to = element.getAttribute('to')
     let colonTo = element.getAttribute(':to')
+    function genToData (data) {
+      return data
+    }
     if (colonTo) {
-      function genToData (data) {
-        return data
-      }
       to = new Function('genToData', 'return genToData(' + colonTo + ')')(genToData)
     }
     const { location, route, href } = router.resolve(to, current, true)
@@ -119,8 +119,6 @@ class Link {
 }
 
 export function createLink (id) {
-  const router = _Magix.config('router')
-  const current = router.history.current
   let links = document.querySelectorAll('#' + id + ' router-link')
   links = Array.from(links)
 
