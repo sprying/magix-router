@@ -1,5 +1,5 @@
 /*!
-  * magix-router v0.0.11
+  * magix-router v0.0.12
   * (c) 2018 sprying
   * @license MIT
   */
@@ -381,10 +381,10 @@ var Link = function Link (element) {
   var current = router.history.current;
   var to = element.getAttribute('to');
   var colonTo = element.getAttribute(':to');
+  function genToData (data) {
+    return data
+  }
   if (colonTo) {
-    function genToData (data) {
-      return data
-    }
     to = new Function('genToData', 'return genToData(' + colonTo + ')')(genToData);
   }
   var ref = router.resolve(to, current, true);
@@ -473,7 +473,6 @@ Link.prototype.update = function update () {
 };
 
 function createLink (id) {
-  var router = _Magix.config('router');
   var links = document.querySelectorAll('#' + id + ' router-link');
   links = Array.from(links);
 
@@ -495,6 +494,7 @@ function install (Magix) {
   install.installed = true;
 
   _Magix = Magix;
+
   var ctor = function (opts) {
     var this$1 = this;
 
@@ -2580,7 +2580,7 @@ function createHref (base, fullPath, mode) {
 }
 
 MagixRouter.install = install;
-MagixRouter.version = '0.0.11';
+MagixRouter.version = '0.0.12';
 
 MagixRouter.createRoute = createRoute;
 MagixRouter.isSameRoute = isSameRoute;
