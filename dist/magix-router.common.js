@@ -1,5 +1,5 @@
 /*!
-  * magix-router v0.0.12
+  * magix-router v0.0.13
   * (c) 2018 sprying
   * @license MIT
   */
@@ -21,7 +21,6 @@ function install$1 () {
     var router = _Magix.config('router');
     var route = router.history.current;
     var targets = document.querySelectorAll('#' + zoneId + ' router-view');
-    targets = Array.from(targets);
 
     if (targets.length) {
       // depth of router-view in DOM
@@ -35,7 +34,8 @@ function install$1 () {
       this.depth = depth;
       this.routeUid = routeMatch? routeMatch.uid : '';
       this.routerViews = [];
-      targets.forEach(function (oldViewElm) {
+      for (var i = 0; i < targets.length; i++) {
+        var oldViewElm = targets[i];
         var viewName = oldViewElm.getAttribute('name') || 'default';
         var generatedId = genUid();
         var elmId = oldViewElm.id || genUid();
@@ -63,7 +63,7 @@ function install$1 () {
           elemId: elmId,
           name: viewName
         });
-      });
+      }
     }
 
     _oldMountZone.call(this, zoneId, viewInitParams);
@@ -470,11 +470,10 @@ Link.prototype.update = function update () {
 
 function createLink (id) {
   var links = document.querySelectorAll('#' + id + ' router-link');
-  links = Array.from(links);
 
-  links.forEach(function (element) {
-    new Link(element);
-  });
+  for (var i = 0; i < links.length; i++) {
+    new Link(links[i]);
+  }
 }
 
 function update$1 () {
@@ -2576,7 +2575,7 @@ function createHref (base, fullPath, mode) {
 }
 
 MagixRouter.install = install;
-MagixRouter.version = '0.0.12';
+MagixRouter.version = '0.0.13';
 
 MagixRouter.createRoute = createRoute;
 MagixRouter.isSameRoute = isSameRoute;
