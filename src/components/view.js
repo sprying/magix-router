@@ -14,7 +14,6 @@ function install () {
     const router = _Magix.config('router')
     const route = router.history.current
     let targets = document.querySelectorAll('#' + zoneId + ' router-view')
-    targets = Array.from(targets)
 
     if (targets.length) {
       // depth of router-view in DOM
@@ -28,7 +27,8 @@ function install () {
       this.depth = depth
       this.routeUid = routeMatch? routeMatch.uid : ''
       this.routerViews = []
-      targets.forEach(oldViewElm => {
+      for (let i = 0; i < targets.length; i++) {
+        const oldViewElm = targets[i]
         const viewName = oldViewElm.getAttribute('name') || 'default'
         const generatedId = genUid()
         const elmId = oldViewElm.id || genUid()
@@ -56,7 +56,7 @@ function install () {
           elemId: elmId,
           name: viewName
         })
-      })
+      }
     }
 
     _oldMountZone.call(this, zoneId, viewInitParams)

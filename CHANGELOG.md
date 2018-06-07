@@ -1,3 +1,7 @@
+* 2018-06-07 # v0.0.13
+1. compatibility
+remove usage of 'Array.from'
+
 * 2018-06-07 # v0.0.12
 1. fix bug
  when build，being surrounded with 'use strict;',use define function in if statement is valid

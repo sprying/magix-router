@@ -120,11 +120,10 @@ class Link {
 
 export function createLink (id) {
   let links = document.querySelectorAll('#' + id + ' router-link')
-  links = Array.from(links)
 
-  links.forEach(function (element) {
-    new Link(element)
-  })
+  for (let i = 0; i < links.length; i++) {
+    new Link(links[i])
+  }
 }
 
 export function update () {
