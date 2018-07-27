@@ -1785,9 +1785,11 @@ function resolveAsyncComponents (matched) {
           // match.views[key] = cls
           match.components[key] = cls;
           pending--;
-          if (pending <= 0) {
-            next();
-          }
+          setTimeout(function () {
+            if (pending <= 0) {
+              next();
+            }
+          }, 0);
         });
       } else {
         match.components[key] = def;
@@ -1804,7 +1806,7 @@ function flatMapComponents (
 ) {
   return flatten(matched.map(function (m) {
     return Object.keys(m.views).map(function (key) { return fn(
-      m.components[key],
+      m.components[key] || m.views[key],
       m.instances[key],
       m, key
     ); })
@@ -2440,8 +2442,6 @@ MagixRouter.prototype.init = function init (app) {
     "before creating root instance."
   );
 
-  this.apps.push(app);
-
   // main app already initialized.
   if (this.app) {
     return
@@ -2465,13 +2465,11 @@ MagixRouter.prototype.init = function init (app) {
   }
 
   history.listen(function (changedInfo) {
-    // this.apps.forEach((app) => {
-      // 触发变动更新
-      var Vframe = _Magix.Vframe;
-      var rootVframe = Vframe.get(_Magix.config('rootId'));
-      VframeUpdate(rootVframe, changedInfo, this$1.history.current);
+    // 触发变动更新
+    var Vframe = _Magix.Vframe;
+    var rootVframe = Vframe.get(_Magix.config('rootId'));
+    VframeUpdate(rootVframe, changedInfo, this$1.history.current);
     update$1();
-    // })
   });
 };
 

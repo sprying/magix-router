@@ -85,8 +85,6 @@ export default class MagixRouter {
       `before creating root instance.`
     )
 
-    this.apps.push(app)
-
     // main app already initialized.
     if (this.app) {
       return
@@ -110,13 +108,11 @@ export default class MagixRouter {
     }
 
     history.listen(changedInfo => {
-      // this.apps.forEach((app) => {
-        // 触发变动更新
-        const Vframe = _Magix.Vframe
-        const rootVframe = Vframe.get(_Magix.config('rootId'))
-        VframeUpdate(rootVframe, changedInfo, this.history.current)
+      // 触发变动更新
+      const Vframe = _Magix.Vframe
+      const rootVframe = Vframe.get(_Magix.config('rootId'))
+      VframeUpdate(rootVframe, changedInfo, this.history.current)
       updateLinks()
-      // })
     })
   }
 

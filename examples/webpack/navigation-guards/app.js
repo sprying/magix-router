@@ -54,7 +54,7 @@ const Baz = Magix.View.extend({
     })
   },
   beforeRouteLeave (to, from, next) {
-    if (this.saved || window.confirm('Not saved, are you sure you want to navigate away?')) {
+    if (this.updater.get('saved') || window.confirm('Not saved, are you sure you want to navigate away?')) {
       next()
     } else {
       next(false)

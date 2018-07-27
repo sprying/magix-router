@@ -59,9 +59,12 @@ export function resolveAsyncComponents (matched: Array<RouteRecord>): Function {
           // match.views[key] = cls
           match.components[key] = cls
           pending--
-          if (pending <= 0) {
-            next()
-          }
+          // wait next loop
+          setTimeout(function () {
+            if (pending <= 0) {
+              next()
+            }
+          }, 0)
         })
       } else {
         match.components[key] = def
@@ -78,7 +81,7 @@ export function flatMapComponents (
 ): Array<?Function> {
   return flatten(matched.map(m => {
     return Object.keys(m.views).map(key => fn(
-      m.components[key],
+      m.components[key] || m.views[key],
       m.instances[key],
       m, key
     ))

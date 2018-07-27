@@ -2,7 +2,7 @@
 
 `magix-router` 现在支持 `magix3.7.0` 版本
 
-无线端 cell ，它的 magix3 是基于 `magix3.7.0` 做了定制，`magix-router` 也同时支持cell场景。
+无线端 cell 的 magix 是基于 `magix3.7.0` 做了定制，`magix-router` 也同时支持。
 
 由于 magix3 小版本升级时，可能会导致 magix-router 不能使用，发现了欢迎联系我。
 
@@ -11,6 +11,7 @@
 ```html
 <script src="https://g.alicdn.com/cell/lib-router/0.0.9/index.js"></script>
 ```
+## 使用方式
 
 ### 无线场景下webpack版本的 `magix-router` 引入
 

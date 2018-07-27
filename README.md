@@ -1,6 +1,6 @@
 # magix-router
 
-> This is magix-router which works only with Magix 3.0.
+> This is magix-router which works only with Magix 3.0. Its realization mainly comes from [vue-router](https://github.com/vuejs/vue-router).
 
 ### Introduction
 
