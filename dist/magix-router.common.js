@@ -1,5 +1,5 @@
 /*!
-  * magix-router v0.0.13
+  * magix-router v0.0.14
   * (c) 2018 sprying
   * @license MIT
   */
@@ -1781,6 +1781,7 @@ function resolveAsyncComponents (matched) {
           // match.views[key] = cls
           match.components[key] = cls;
           pending--;
+          // wait next loop
           setTimeout(function () {
             if (pending <= 0) {
               next();
@@ -2573,7 +2574,7 @@ function createHref (base, fullPath, mode) {
 }
 
 MagixRouter.install = install;
-MagixRouter.version = '0.0.13';
+MagixRouter.version = '0.0.14';
 
 MagixRouter.createRoute = createRoute;
 MagixRouter.isSameRoute = isSameRoute;
