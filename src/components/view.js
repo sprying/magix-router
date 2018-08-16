@@ -64,7 +64,7 @@ function install () {
 }
 
 /**
- * when route change, determine if render again
+ * when route change, determine whether render again
  * @param vframe
  */
 function update (vframe) {
