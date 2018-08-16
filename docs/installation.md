@@ -4,7 +4,7 @@
 
 无线端 cell 的 magix 是基于 `magix3.7.0` 做了定制，`magix-router` 也同时支持。
 
-由于 magix3 小版本升级时，可能会导致 magix-router 不能使用，发现了欢迎联系我。
+magix3 小版本升级时，可能会导致 magix-router 不能使用，发现了欢迎联系我。
 
 ## cdn地址
 

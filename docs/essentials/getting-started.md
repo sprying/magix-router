@@ -4,7 +4,7 @@
 
 用 Magix + magix-router 创建单页应用，是非常简单的。使用 Magix ，我们已经可以通过组合view来组成应用程序，当你要把 magix-router 添加进来，我们需要做的是，将视图(views)映射到路由(routes)，然后告诉 magix-router 在哪里渲染它们。下面是个基本例子：
 
-> 所有的例子都将 Magix 以解析模板。更多细节请[移步这里](https://thx.github.io/magix)。
+> 所有的例子都将使用 Magix 以解析模板。更多细节请[移步这里](https://thx.github.io/magix)。
 
 ### HTML
 
