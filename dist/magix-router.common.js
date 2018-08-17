@@ -5,117 +5,6 @@
   */
 'use strict';
 
-var uid = 0;
-var genUid = function () {
-  return '_magix_router_view_uid_' + ++uid
-};
-
-/**
- * intercept Magix.Vframe.prototype.mountZone, router-view DOM add attribute [mx-view=...] for next mountVframe
- */
-function install$1 () {
-  var _oldMountZone = _Magix.Vframe.prototype.mountZone;
-  _Magix.Vframe.prototype.mountZone = function (zoneId, viewInitParams) {
-    var this$1 = this;
-
-    var router = _Magix.config('router');
-    var route = router.history.current;
-    var targets = document.querySelectorAll('#' + zoneId + ' router-view');
-
-    if (targets.length) {
-      // depth of router-view in DOM
-      var depth = 0;
-      var owner = this;
-      owner.hasRouterView = true;
-      while (owner = owner.parent()) {
-        if (owner.hasRouterView === true) { depth++; }
-      }
-      var routeMatch = route.matched[depth];
-      this.depth = depth;
-      this.routeUid = routeMatch? routeMatch.uid : '';
-      this.routerViews = [];
-      for (var i = 0; i < targets.length; i++) {
-        var oldViewElm = targets[i];
-        var viewName = oldViewElm.getAttribute('name') || 'default';
-        var generatedId = genUid();
-        var elmId = oldViewElm.id || genUid();
-        var viewElm = document.createElement('div');
-        if (routeMatch) {
-          var viewPath = routeMatch? routeMatch['views'][viewName] : '';
-
-          if (viewPath) {
-            if (typeof viewPath !== 'string') {
-              _Magix.addView(generatedId, viewPath);
-              viewPath = generatedId;
-            }
-
-            viewPath += '?_renderFrom=magix-router&_depth=' + depth + '&_viewName=' + viewName;
-            viewElm.setAttribute('mx-view', viewPath);
-          }
-        }
-
-        viewElm.setAttribute('id', elmId);
-
-        viewElm.innerHTML = oldViewElm.innerHTML;
-
-        oldViewElm.parentElement.replaceChild(viewElm, oldViewElm);
-        this$1.routerViews.push({
-          elemId: elmId,
-          name: viewName
-        });
-      }
-    }
-
-    _oldMountZone.call(this, zoneId, viewInitParams);
-  };
-}
-
-/**
- * when route change, determine if render again
- * @param vframe
- */
-function update (vframe) {
-  if (vframe.hasRouterView) {
-    var router = _Magix.config('router');
-    var route = router.history.current;
-    var routerViews = vframe.routerViews;
-    var depth = vframe.depth;
-    var routeMatch = route.matched[depth];
-
-    if (routeMatch && (routeMatch['uid'] !== vframe.routeUid)) {
-      if (routerViews.length) {
-        routerViews.forEach(function (view) {
-          var name = view.name;
-          var subZoneId = view.elemId;
-          var viewPath = routeMatch.views[name];
-
-          if (!viewPath) { return }
-          var viewInitParams = {
-            '_renderFrom': 'magix-router',
-            '_depth': depth,
-            '_viewName': name
-          };
-          if (typeof viewPath !== 'string') {
-            var generatedId = genUid();
-            _Magix.addView(generatedId, viewPath);
-            viewPath = generatedId;
-          }
-          vframe.routeUid = routeMatch.uid;
-
-          // for developer debug
-          var fullPath = viewPath + '?_renderFrom=magix-router&_depth=' + depth + '&_viewName=' + name;
-          document.getElementById(subZoneId).setAttribute('mx-view', fullPath);
-
-          vframe.unmountVframe(subZoneId);
-          vframe.mountVframe(subZoneId, viewPath, viewInitParams);
-        });
-      }
-    }
-  }
-}
-
-var ViewComponent = {install: install$1, update: update};
-
 /*  */
 
 function assert (condition, message) {
@@ -482,6 +371,119 @@ function update$1 () {
   });
 }
 
+var uid = 0;
+var genUid = function () {
+  return '_magix_router_view_uid_' + ++uid
+};
+
+/**
+ * intercept Magix.Vframe.prototype.mountZone, router-view DOM add attribute [mx-view=...] for next mountVframe
+ */
+function install$1 () {
+  var _oldMountZone = _Magix.Vframe.prototype.mountZone;
+  _Magix.Vframe.prototype.mountZone = function (zoneId, viewInitParams) {
+    var this$1 = this;
+
+    createLink(zoneId);
+
+    var router = _Magix.config('router');
+    var route = router.history.current;
+    var targets = document.querySelectorAll('#' + zoneId + ' router-view');
+
+    if (targets.length) {
+      // depth of router-view in DOM
+      var depth = 0;
+      var owner = this;
+      owner.hasRouterView = true;
+      while (owner = owner.parent()) {
+        if (owner.hasRouterView === true) { depth++; }
+      }
+      var routeMatch = route.matched[depth];
+      this.depth = depth;
+      this.routeUid = routeMatch? routeMatch.uid : '';
+      this.routerViews = [];
+      for (var i = 0; i < targets.length; i++) {
+        var oldViewElm = targets[i];
+        var viewName = oldViewElm.getAttribute('name') || 'default';
+        var generatedId = genUid();
+        var elmId = oldViewElm.id || genUid();
+        var viewElm = document.createElement('div');
+        if (routeMatch) {
+          var viewPath = routeMatch? routeMatch['views'][viewName] : '';
+
+          if (viewPath) {
+            if (typeof viewPath !== 'string') {
+              _Magix.addView(generatedId, viewPath);
+              viewPath = generatedId;
+            }
+
+            viewPath += '?_renderFrom=magix-router&_depth=' + depth + '&_viewName=' + viewName;
+            viewElm.setAttribute('mx-view', viewPath);
+          }
+        }
+
+        viewElm.setAttribute('id', elmId);
+
+        viewElm.innerHTML = oldViewElm.innerHTML;
+
+        oldViewElm.parentElement.replaceChild(viewElm, oldViewElm);
+        this$1.routerViews.push({
+          elemId: elmId,
+          name: viewName
+        });
+      }
+    }
+
+    _oldMountZone.call(this, zoneId, viewInitParams);
+  };
+}
+
+/**
+ * when route change, determine whether render again
+ * @param vframe
+ */
+function update (vframe) {
+  if (vframe.hasRouterView) {
+    var router = _Magix.config('router');
+    var route = router.history.current;
+    var routerViews = vframe.routerViews;
+    var depth = vframe.depth;
+    var routeMatch = route.matched[depth];
+
+    if (routeMatch && (routeMatch['uid'] !== vframe.routeUid)) {
+      if (routerViews.length) {
+        routerViews.forEach(function (view) {
+          var name = view.name;
+          var subZoneId = view.elemId;
+          var viewPath = routeMatch.views[name];
+
+          if (!viewPath) { return }
+          var viewInitParams = {
+            '_renderFrom': 'magix-router',
+            '_depth': depth,
+            '_viewName': name
+          };
+          if (typeof viewPath !== 'string') {
+            var generatedId = genUid();
+            _Magix.addView(generatedId, viewPath);
+            viewPath = generatedId;
+          }
+          vframe.routeUid = routeMatch.uid;
+
+          // for developer debug
+          var fullPath = viewPath + '?_renderFrom=magix-router&_depth=' + depth + '&_viewName=' + name;
+          document.getElementById(subZoneId).setAttribute('mx-view', fullPath);
+
+          vframe.unmountVframe(subZoneId);
+          vframe.mountVframe(subZoneId, viewPath, viewInitParams);
+        });
+      }
+    }
+  }
+}
+
+var ViewComponent = {install: install$1, update: update};
+
 var _Magix;
 
 function install (Magix) {
@@ -491,8 +493,6 @@ function install (Magix) {
   _Magix = Magix;
 
   var ctor = function (opts) {
-    var this$1 = this;
-
     var router = Magix.config('router');
     var route;
     if (!this.owner.parent()) {
@@ -515,10 +515,6 @@ function install (Magix) {
     if (opts._renderFrom === 'magix-router') {
       route.matched[opts._depth]['instances'][opts['_viewName']] = this;
     }
-
-    this.on('rendered', function (e) {
-      createLink(this$1.owner.id);
-    });
   };
 
   var extend = Magix.View.extend;
@@ -2587,7 +2583,7 @@ if (inBrowser && window.Magix) {
 var VframeUpdate = function (vframe, changeInfo, route) {
   var Vframe = _Magix.Vframe;
   var view;
-  if (vframe && (view = vframe['$v'])) {
+  if (vframe && (view = vframe['@{vframe#view.entity}'])) {
     var isChanged = ViewIsObserveChanged(view, changeInfo);
 
     // control updating router-view

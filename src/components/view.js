@@ -1,4 +1,5 @@
 import { _Magix } from '../install'
+import { createLink } from './link'
 
 let uid = 0
 const genUid = function () {
@@ -11,6 +12,8 @@ const genUid = function () {
 function install () {
   const _oldMountZone = _Magix.Vframe.prototype.mountZone
   _Magix.Vframe.prototype.mountZone = function (zoneId, viewInitParams) {
+    createLink(zoneId)
+
     const router = _Magix.config('router')
     const route = router.history.current
     let targets = document.querySelectorAll('#' + zoneId + ' router-view')

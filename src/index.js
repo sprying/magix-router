@@ -239,7 +239,7 @@ if (inBrowser && window.Magix) {
 const VframeUpdate = function (vframe, changeInfo, route) {
   const Vframe = _Magix.Vframe
   let view
-  if (vframe && (view = vframe['$v'])) {
+  if (vframe && (view = vframe['@{vframe#view.entity}'])) {
     let isChanged = ViewIsObserveChanged(view, changeInfo)
 
     // control updating router-view

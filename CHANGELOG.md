@@ -1,3 +1,6 @@
+* 2018-08-17 # v0.0.15
+1. upgrade magix
+
 * 2018-07-27 # v0.0.14
 1. fix bug
 navigation guards has problem when using in view.

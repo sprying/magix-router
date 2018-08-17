@@ -1,5 +1,4 @@
 import ViewComponent from './components/view'
-import { createLink } from './components/link'
 
 export let _Magix
 
@@ -32,10 +31,6 @@ export function install (Magix) {
     if (opts._renderFrom === 'magix-router') {
       route.matched[opts._depth]['instances'][opts['_viewName']] = this
     }
-
-    this.on('rendered', e => {
-      createLink(this.owner.id)
-    })
   }
 
   const extend = Magix.View.extend
