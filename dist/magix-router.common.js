@@ -1,5 +1,5 @@
 /*!
-  * magix-router v0.0.15
+  * magix-router v0.0.16
   * (c) 2018 sprying
   * @license MIT
   */
@@ -261,7 +261,8 @@ function queryIncludes (current, target) {
 
 var cacheList = [];
 
-var Link = function Link (element) {
+var Link = function Link (element, vframeId) {
+  this.vframeId = vframeId;
   var router = _Magix.config('router');
   var current = router.history.current;
   var to = element.getAttribute('to');
@@ -357,11 +358,11 @@ Link.prototype.update = function update () {
     : isIncludedRoute(current, this.compareTarget)? this.activeClass : '');
 };
 
-function createLink (id) {
+function createLink (id, vframeId) {
   var links = document.querySelectorAll('#' + id + ' router-link');
 
   for (var i = 0; i < links.length; i++) {
-    new Link(links[i]);
+    new Link(links[i], vframeId);
   }
 }
 
@@ -369,6 +370,14 @@ function update$1 () {
   cacheList.forEach(function (link) {
     link.update();
   });
+}
+
+function clearLink (id) {
+  for (var i = cacheList.length; i > 0; i--) {
+    if (cacheList[i--].vframeId === id) {
+      cacheList.splice(i--, 1);
+    }
+  }
 }
 
 var uid = 0;
@@ -381,10 +390,14 @@ var genUid = function () {
  */
 function install$1 () {
   var _oldMountZone = _Magix.Vframe.prototype.mountZone;
+  _Magix.Vframe.prototype.unmountVframe = function (id /*,keepPreHTML*/, inner) {
+    clearLink(id);
+    _oldMountZone.call(this, id, inner);
+  };
   _Magix.Vframe.prototype.mountZone = function (zoneId, viewInitParams) {
     var this$1 = this;
 
-    createLink(zoneId);
+    createLink(zoneId, this.id);
 
     var router = _Magix.config('router');
     var route = router.history.current;
@@ -2570,7 +2583,7 @@ function createHref (base, fullPath, mode) {
 }
 
 MagixRouter.install = install;
-MagixRouter.version = '0.0.15';
+MagixRouter.version = '0.0.16';
 
 MagixRouter.createRoute = createRoute;
 MagixRouter.isSameRoute = isSameRoute;
@@ -2583,7 +2596,7 @@ if (inBrowser && window.Magix) {
 var VframeUpdate = function (vframe, changeInfo, route) {
   var Vframe = _Magix.Vframe;
   var view;
-  if (vframe && (view = vframe['@{vframe#view.entity}'])) {
+  if (vframe && (view = vframe.$v || vframe['@{vframe#view.entity}'])) {
     var isChanged = ViewIsObserveChanged(view, changeInfo);
 
     // control updating router-view
@@ -2594,6 +2607,7 @@ var VframeUpdate = function (vframe, changeInfo, route) {
     }
 
     if (isChanged) {
+      clearLink(vframe.id);
       view['render']();
     }
     var cs = vframe.children();
