@@ -1,5 +1,5 @@
 import { _Magix } from '../install'
-import { createLink } from './link'
+import { createLink, clearLink } from './link'
 
 let uid = 0
 const genUid = function () {
@@ -11,8 +11,13 @@ const genUid = function () {
  */
 function install () {
   const _oldMountZone = _Magix.Vframe.prototype.mountZone
+  const _unmountVframe = _Magix.Vframe.prototype.unmountVframe
+  _Magix.Vframe.prototype.unmountVframe = function (id /*,keepPreHTML*/, inner) {
+    clearLink(id)
+    _oldMountZone.call(this, id, inner)
+  }
   _Magix.Vframe.prototype.mountZone = function (zoneId, viewInitParams) {
-    createLink(zoneId)
+    createLink(zoneId, this.id)
 
     const router = _Magix.config('router')
     const route = router.history.current

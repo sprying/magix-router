@@ -17,7 +17,7 @@ import type { Matcher } from './create-matcher'
 import { createRoute, isSameRoute, isIncludedRoute } from './util/route'
 
 import ViewComponent from './components/view'
-import { update as updateLinks } from './components/link'
+import { update as updateLinks, clearLink } from './components/link'
 
 export default class MagixRouter {
   static install: () => void;
@@ -239,7 +239,7 @@ if (inBrowser && window.Magix) {
 const VframeUpdate = function (vframe, changeInfo, route) {
   const Vframe = _Magix.Vframe
   let view
-  if (vframe && (view = vframe['@{vframe#view.entity}'])) {
+  if (vframe && (view = vframe.$v || vframe['@{vframe#view.entity}'])) {
     let isChanged = ViewIsObserveChanged(view, changeInfo)
 
     // control updating router-view
@@ -250,6 +250,7 @@ const VframeUpdate = function (vframe, changeInfo, route) {
     }
 
     if (isChanged) {
+      clearLink(vframe.id)
       view['render']()
     }
     const cs = vframe.children()

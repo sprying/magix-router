@@ -18,7 +18,8 @@ class Link {
   location: Location;
   compareTarget: Route;
 
-  constructor (element: HTMLElement) {
+  constructor (element: HTMLElement, vframeId: String) {
+    this.vframeId = vframeId
     const router = _Magix.config('router')
     const current = router.history.current
     let to = element.getAttribute('to')
@@ -118,11 +119,11 @@ class Link {
   }
 }
 
-export function createLink (id) {
+export function createLink (id, vframeId) {
   let links = document.querySelectorAll('#' + id + ' router-link')
 
   for (let i = 0; i < links.length; i++) {
-    new Link(links[i])
+    new Link(links[i], vframeId)
   }
 }
 
@@ -130,5 +131,13 @@ export function update () {
   cacheList.forEach(link => {
     link.update()
   })
+}
+
+export function clearLink (id) {
+  for (let i = cacheList.length; i > 0; i--) {
+    if (cacheList[i--].vframeId === id) {
+      cacheList.splice(i--, 1)
+    }
+  }
 }
 
