@@ -1,5 +1,5 @@
 /*!
-  * magix-router v0.0.16
+  * magix-router v0.0.17
   * (c) 2018 sprying
   * @license MIT
   */
@@ -372,8 +372,8 @@ function update$1 () {
 
 function clearLink (id) {
   for (var i = cacheList.length; i > 0; i--) {
-    if (cacheList[i--].vframeId === id) {
-      cacheList.splice(i--, 1);
+    if (cacheList[i - 1].vframeId === id) {
+      cacheList.splice(i - 1, 1);
     }
   }
 }
@@ -388,9 +388,10 @@ var genUid = function () {
  */
 function install$1 () {
   var _oldMountZone = _Magix.Vframe.prototype.mountZone;
+  var _unmountVframe = _Magix.Vframe.prototype.unmountVframe;
   _Magix.Vframe.prototype.unmountVframe = function (id /*,keepPreHTML*/, inner) {
     clearLink(id);
-    _oldMountZone.call(this, id, inner);
+    _unmountVframe.call(this, id, inner);
   };
   _Magix.Vframe.prototype.mountZone = function (zoneId, viewInitParams) {
     var this$1 = this;
@@ -2581,7 +2582,7 @@ function createHref (base, fullPath, mode) {
 }
 
 MagixRouter.install = install;
-MagixRouter.version = '0.0.16';
+MagixRouter.version = '0.0.17';
 
 MagixRouter.createRoute = createRoute;
 MagixRouter.isSameRoute = isSameRoute;
