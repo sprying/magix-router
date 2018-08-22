@@ -14,7 +14,7 @@ function install () {
   const _unmountVframe = _Magix.Vframe.prototype.unmountVframe
   _Magix.Vframe.prototype.unmountVframe = function (id /*,keepPreHTML*/, inner) {
     clearLink(id)
-    _oldMountZone.call(this, id, inner)
+    _unmountVframe.call(this, id, inner)
   }
   _Magix.Vframe.prototype.mountZone = function (zoneId, viewInitParams) {
     createLink(zoneId, this.id)

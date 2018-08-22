@@ -1,3 +1,6 @@
+* 2018-08-17 # v0.0.17
+1. fix v0.0.16's bug
+
 * 2018-08-17 # v0.0.16
 1. remove unuseful link cache
 2. support old patch magix version

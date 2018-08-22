@@ -135,8 +135,8 @@ export function update () {
 
 export function clearLink (id) {
   for (let i = cacheList.length; i > 0; i--) {
-    if (cacheList[i--].vframeId === id) {
-      cacheList.splice(i--, 1)
+    if (cacheList[i - 1].vframeId === id) {
+      cacheList.splice(i - 1, 1)
     }
   }
 }
