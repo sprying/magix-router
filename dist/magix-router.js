@@ -345,10 +345,20 @@ Link.prototype.bindEvents = function bindEvents () {
       router.push(location);
     }
   }
+  this.handler = handler;
 };
 
 Link.prototype.unbindEvents = function unbindEvents () {
-  
+  var ref = this;
+    var element = ref.element;
+    var handler = ref.handler;
+  if (element.removeEventListener) {
+    element.removeEventListener('click', handler, false);
+  } else if (element.detachEvent) {
+    element.detachEvent("onclick", handler);
+  } else {
+    element["onclick"] = null;
+  }
 };
 
 Link.prototype.update = function update () {
@@ -378,7 +388,9 @@ function update$1 () {
 
 function clearLink (id) {
   for (var i = cacheList.length; i > 0; i--) {
-    if (cacheList[i - 1].vframeId === id) {
+    var link = cacheList[i - 1];
+    link.unbindEvents();
+    if (link.vframeId === id) {
       cacheList.splice(i - 1, 1);
     }
   }

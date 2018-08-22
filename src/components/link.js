@@ -92,19 +92,17 @@ class Link {
         router.push(location)
       }
     }
+    this.handler = handler
   }
 
   unbindEvents () {
-    const { element } = this
-
-    function removeHandler () {
-      if (element.removeEventListener) {
-        element.removeEventListener(type, handler);
-      } else if (element.detachEvent) {
-        element.detachEvent("on" + type, handler);
-      } else {
-        element["on" + type] = null;
-      }
+    const { element, handler} = this
+    if (element.removeEventListener) {
+      element.removeEventListener('click', handler, false)
+    } else if (element.detachEvent) {
+      element.detachEvent("onclick", handler)
+    } else {
+      element["onclick"] = null
     }
   }
 
@@ -135,8 +133,10 @@ export function update () {
 
 export function clearLink (id) {
   for (let i = cacheList.length; i > 0; i--) {
-    if (cacheList[i - 1].vframeId === id) {
-      cacheList.splice(i - 1, 1)
+    const link = cacheList[i - 1]
+    link.unbindEvents()
+    if (link.vframeId === id) {
+      cacheList.splice(i - 1, 1);
     }
   }
 }
