@@ -1,5 +1,5 @@
 /*!
-  * magix-router v0.0.18
+  * magix-router v0.0.19
   * (c) 2018 sprying
   * @license MIT
   */
@@ -389,8 +389,8 @@ function update$1 () {
 function clearLink (id) {
   for (var i = cacheList.length; i > 0; i--) {
     var link = cacheList[i - 1];
-    link.unbindEvents();
     if (link.vframeId === id) {
+      link.unbindEvents();
       cacheList.splice(i - 1, 1);
     }
   }
@@ -2600,7 +2600,7 @@ function createHref (base, fullPath, mode) {
 }
 
 MagixRouter.install = install;
-MagixRouter.version = '0.0.18';
+MagixRouter.version = '0.0.19';
 
 MagixRouter.createRoute = createRoute;
 MagixRouter.isSameRoute = isSameRoute;
