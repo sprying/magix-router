@@ -9,7 +9,11 @@ magix3 小版本升级时，可能会导致 magix-router 不能使用，发现�
 ## cdn地址
 
 ```html
+<<<<<<< Updated upstream
 <script src="https://g.alicdn.com/cell/lib-router/0.0.18/index.js"></script>
+=======
+<script src="https://g.alicdn.com/cell/lib-router/0.0.20/index.js"></script>
+>>>>>>> Stashed changes
 ```
 ## 使用方式
 
@@ -19,7 +23,11 @@ magix3 小版本升级时，可能会导致 magix-router 不能使用，发现�
 <script src="https://g.alicdn.com/cell/lib-zepto/0.0.2/index.js"></script>
 <!--magix要依赖第三方基类库-->
 <script src="https://g.alicdn.com/cell/lib-magix/0.0.15/index.js"></script>
+<<<<<<< Updated upstream
 <script src="https://g.alicdn.com/cell/lib-router/0.0.18/index.js"></script>
+=======
+<script src="https://g.alicdn.com/cell/lib-router/0.0.20/index.js"></script>
+>>>>>>> Stashed changes
 ```
 
 后面的demo都是基于无线场景
@@ -37,7 +45,11 @@ https://unpkg.com/easy-magix/dist/cmd/magix-debug.js
 ``` html
 <script src="https://unpkg.com/seajs@3.0.2/dist/sea-debug.js"></script>
 <script src="https://unpkg.com/jquery@3.1.1/dist/jquery.js"></script>
+<<<<<<< Updated upstream
 <script src="https://g.alicdn.com/cell/lib-router/0.0.18/index.js"></script>
+=======
+<script src="https://g.alicdn.com/cell/lib-router/0.0.20/index.js"></script>
+>>>>>>> Stashed changes
 
 <div id="app">
   <router-view></router-view>

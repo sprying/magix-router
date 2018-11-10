@@ -1,3 +1,6 @@
+* 2018-09-07 # v0.0.20
+1. fix html5 router replace's bug
+
 * 2018-09-07 # v0.0.19
 1. fix v0.0.16's bug
 
