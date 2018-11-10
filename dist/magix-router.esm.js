@@ -1,5 +1,5 @@
 /*!
-  * magix-router v0.0.19
+  * magix-router v0.0.20
   * (c) 2018 sprying
   * @license MIT
   */
@@ -2236,7 +2236,7 @@ var HTML5History = (function (History$$1) {
     var ref = this;
     var fromRoute = ref.current;
     this.transitionTo(location, function (route) {
-      replaceState(cleanPath(this$1.base + route.fullPath));
+      replaceState(cleanPath(this$1.base + route.fullPath), true);
       handleScroll(this$1.router, route, fromRoute, false);
       onComplete && onComplete(route);
     }, onAbort);
@@ -2594,7 +2594,7 @@ function createHref (base, fullPath, mode) {
 }
 
 MagixRouter.install = install;
-MagixRouter.version = '0.0.19';
+MagixRouter.version = '0.0.20';
 
 MagixRouter.createRoute = createRoute;
 MagixRouter.isSameRoute = isSameRoute;
