@@ -1,5 +1,5 @@
 /*!
-  * magix-router v0.0.21
+  * magix-router v0.0.22
   * (c) 2018 sprying
   * @license MIT
   */
@@ -2594,7 +2594,7 @@ function createHref (base, fullPath, mode) {
 }
 
 MagixRouter.install = install;
-MagixRouter.version = '0.0.21';
+MagixRouter.version = '0.0.22';
 
 MagixRouter.createRoute = createRoute;
 MagixRouter.isSameRoute = isSameRoute;
