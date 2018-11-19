@@ -1,5 +1,5 @@
 /*!
-  * magix-router v0.0.22
+  * magix-router v0.0.23
   * (c) 2018 sprying
   * @license MIT
   */
@@ -260,6 +260,7 @@ function queryIncludes (current, target) {
 /*  */
 
 var cacheList = [];
+var skipLinkAttributes = ['exact', 'replace', 'class', 'active-class', 'exact-active-class'];
 
 var Link = function Link (element, vframeId) {
   this.vframeId = vframeId;
@@ -305,6 +306,11 @@ var Link = function Link (element, vframeId) {
     genLink = document.createElement(tag);
   }
   genLink.innerHTML = element.innerHTML;
+  for (var ei = 0, eLen = element.attributes.length; ei < eLen; ei++) {
+    if (skipLinkAttributes.indexOf(element.attributes[ei].name) === -1) {
+      genLink.setAttribute(element.attributes[ei].name, element.attributes[ei].value);
+    }
+  }
   element.parentElement.replaceChild(genLink, element);
 
   this.element = genLink;
@@ -468,7 +474,7 @@ function install$1 () {
  * when route change, determine whether render again
  * @param vframe
  */
-function update (vframe) {
+function update (vframe, changeInfo) {
   if (vframe.hasRouterView) {
     var router = _Magix.config('router');
     var route = router.history.current;
@@ -502,6 +508,7 @@ function update (vframe) {
 
           vframe.unmountVframe(subZoneId);
           vframe.mountVframe(subZoneId, viewPath, viewInitParams);
+          changeInfo.mountedVframes.push(subZoneId);
         });
       }
     }
@@ -1804,11 +1811,11 @@ function resolveAsyncComponents (matched) {
           match.components[key] = cls;
           pending--;
           // wait next loop
-          setTimeout(function () {
+          // setTimeout(function () {
             if (pending <= 0) {
               next();
             }
-          }, 0);
+          // }, 0)
         });
       } else {
         match.components[key] = def;
@@ -2151,7 +2158,9 @@ function poll (
 
 function diffRoute (from, to) {
   var queryDiffMap = {};
-  var diffMap = {};
+  var diffMap = {
+    mountedVframes: []
+  };
   diffMap.query = queryDiffMap;
 
   compareBetween(from.query, to.query, queryDiffMap);
@@ -2238,7 +2247,7 @@ var HTML5History = (function (History$$1) {
     var ref = this;
     var fromRoute = ref.current;
     this.transitionTo(location, function (route) {
-      replaceState(cleanPath(this$1.base + route.fullPath), true);
+      replaceState(cleanPath(this$1.base + route.fullPath));
       handleScroll(this$1.router, route, fromRoute, false);
       onComplete && onComplete(route);
     }, onAbort);
@@ -2596,7 +2605,7 @@ function createHref (base, fullPath, mode) {
 }
 
 MagixRouter.install = install;
-MagixRouter.version = '0.0.22';
+MagixRouter.version = '0.0.23';
 
 MagixRouter.createRoute = createRoute;
 MagixRouter.isSameRoute = isSameRoute;
@@ -2606,6 +2615,22 @@ if (inBrowser && window.Magix) {
   MagixRouter.install(window.Magix);
 }
 
+var parentsHasOne = function (vframes, target) {
+  var has = false;
+  while(target) {
+    vframes.forEach(function (item) {
+      if (item === target.id) {
+        has = true;
+      }
+    });
+    if (has) {
+      break
+    }
+    target = target.parent();
+  }
+  return has
+};
+
 var VframeUpdate = function (vframe, changeInfo, route) {
   var Vframe = _Magix.Vframe;
   var view;
@@ -2613,13 +2638,13 @@ var VframeUpdate = function (vframe, changeInfo, route) {
     var isChanged = ViewIsObserveChanged(view, changeInfo);
 
     // control updating router-view
-    ViewComponent.update(vframe);
+    ViewComponent.update(vframe, changeInfo);
 
     if (vframe.hasLinkView) {
       isChanged = true;
     }
 
-    if (isChanged) {
+    if (isChanged && !parentsHasOne(changeInfo.mountedVframes, vframe)) {
       clearLink(vframe.id);
       view['render']();
     }
@@ -2631,14 +2656,13 @@ var VframeUpdate = function (vframe, changeInfo, route) {
 };
 var ViewIsObserveChanged = function (view, changeInfo) {
   var loc = view._observeTag;
-  var query;
   if (!loc) { return false }
   if (loc.f) {
     if (loc.p && changeInfo.path) {
       return true
     }
     if (loc.k) {
-      query = changeInfo.query;
+      var query = changeInfo.query;
       for (var _i = 0, _a = loc.k; _i < _a.length; _i++) {
         if (query[_a[_i]]) { return true }
       }
