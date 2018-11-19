@@ -60,11 +60,11 @@ export function resolveAsyncComponents (matched: Array<RouteRecord>): Function {
           match.components[key] = cls
           pending--
           // wait next loop
-          setTimeout(function () {
+          // setTimeout(function () {
             if (pending <= 0) {
               next()
             }
-          }, 0)
+          // }, 0)
         })
       } else {
         match.components[key] = def

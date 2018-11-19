@@ -324,8 +324,10 @@ function poll (
 }
 
 function diffRoute (from, to) {
-  var queryDiffMap = {}
-  var diffMap = {}
+  const queryDiffMap = {}
+  const diffMap = {
+    mountedVframes: []
+  }
   diffMap.query = queryDiffMap
 
   compareBetween(from.query, to.query, queryDiffMap)

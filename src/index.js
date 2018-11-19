@@ -29,7 +29,7 @@ export default class MagixRouter {
   readyCbs: Array<Function>;
   options: RouterOptions;
   mode: string;
-  history: HashHistory | HTML5History | AbstractHistory;
+  history: HashHistory | HTML5History;
   matcher: Matcher;
   fallback: boolean;
   beforeHooks: Array<?NavigationGuard>;
@@ -221,7 +221,7 @@ function registerHook (list: Array<any>, fn: Function): Function {
 }
 
 function createHref (base: string, fullPath: string, mode) {
-  var path = mode === 'hash' ? '#' + fullPath : fullPath
+  const path = mode === 'hash' ? '#' + fullPath : fullPath
   return base ? cleanPath(base + '/' + path) : path
 }
 
@@ -236,6 +236,22 @@ if (inBrowser && window.Magix) {
   MagixRouter.install(window.Magix)
 }
 
+const parentsHasOne = function (vframes, target) {
+  let has = false
+  while(target) {
+    vframes.forEach(function (item) {
+      if (item === target.id) {
+        has = true
+      }
+    })
+    if (has) {
+      break
+    }
+    target = target.parent()
+  }
+  return has
+}
+
 const VframeUpdate = function (vframe, changeInfo, route) {
   const Vframe = _Magix.Vframe
   let view
@@ -243,13 +259,13 @@ const VframeUpdate = function (vframe, changeInfo, route) {
     let isChanged = ViewIsObserveChanged(view, changeInfo)
 
     // control updating router-view
-    ViewComponent.update(vframe)
+    ViewComponent.update(vframe, changeInfo)
 
     if (vframe.hasLinkView) {
       isChanged = true
     }
 
-    if (isChanged) {
+    if (isChanged && !parentsHasOne(changeInfo.mountedVframes, vframe)) {
       clearLink(vframe.id)
       view['render']()
     }
@@ -260,15 +276,14 @@ const VframeUpdate = function (vframe, changeInfo, route) {
   }
 }
 const ViewIsObserveChanged = function (view, changeInfo) {
-  var loc = view._observeTag
-  var query
+  const loc = view._observeTag
   if (!loc) return false
   if (loc.f) {
     if (loc.p && changeInfo.path) {
       return true
     }
     if (loc.k) {
-      query = changeInfo.query
+      const query = changeInfo.query
       for (let _i = 0, _a = loc.k; _i < _a.length; _i++) {
         if (query[_a[_i]]) return true
       }

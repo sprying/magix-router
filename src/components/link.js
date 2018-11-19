@@ -5,6 +5,7 @@ import { createRoute, isSameRoute, isIncludedRoute } from '../util/route'
 
 
 const cacheList: Array<Link> = []
+const skipLinkAttributes = ['exact', 'replace', 'class', 'active-class', 'exact-active-class']
 
 let installed = false
 
@@ -59,6 +60,11 @@ class Link {
       genLink = document.createElement(tag)
     }
     genLink.innerHTML = element.innerHTML
+    for (var ei = 0, eLen = element.attributes.length; ei < eLen; ei++) {
+      if (skipLinkAttributes.indexOf(element.attributes[ei].name) === -1) {
+        genLink.setAttribute(element.attributes[ei].name, element.attributes[ei].value)
+      }
+    }
     element.parentElement.replaceChild(genLink, element)
 
     this.element = genLink

@@ -75,7 +75,7 @@ function install () {
  * when route change, determine whether render again
  * @param vframe
  */
-function update (vframe) {
+function update (vframe, changeInfo) {
   if (vframe.hasRouterView) {
     const router = _Magix.config('router')
     const route = router.history.current
@@ -108,6 +108,7 @@ function update (vframe) {
 
           vframe.unmountVframe(subZoneId)
           vframe.mountVframe(subZoneId, viewPath, viewInitParams)
+          changeInfo.mountedVframes.push(subZoneId)
         })
       }
     }
