@@ -1,5 +1,5 @@
 /*!
-  * magix-router v0.0.23
+  * magix-router v0.0.24
   * (c) 2019 sprying
   * @license MIT
   */
@@ -2413,6 +2413,65 @@ function replaceHash (path) {
 
 /*  */
 
+
+var AbstractHistory = (function (History$$1) {
+  function AbstractHistory (router, base) {
+    History$$1.call(this, router, base);
+    this.stack = [];
+    this.index = -1;
+  }
+
+  if ( History$$1 ) AbstractHistory.__proto__ = History$$1;
+  AbstractHistory.prototype = Object.create( History$$1 && History$$1.prototype );
+  AbstractHistory.prototype.constructor = AbstractHistory;
+
+  AbstractHistory.prototype.push = function push (location, onComplete, onAbort) {
+    var this$1 = this;
+
+    this.transitionTo(location, function (route) {
+      this$1.stack = this$1.stack.slice(0, this$1.index + 1).concat(route);
+      this$1.index++;
+      onComplete && onComplete(route);
+    }, onAbort);
+  };
+
+  AbstractHistory.prototype.replace = function replace (location, onComplete, onAbort) {
+    var this$1 = this;
+
+    this.transitionTo(location, function (route) {
+      this$1.stack = this$1.stack.slice(0, this$1.index).concat(route);
+      onComplete && onComplete(route);
+    }, onAbort);
+  };
+
+  AbstractHistory.prototype.go = function go (n) {
+    var this$1 = this;
+
+    var targetIndex = this.index + n;
+    if (targetIndex < 0 || targetIndex >= this.stack.length) {
+      return
+    }
+    var route = this.stack[targetIndex];
+    this.confirmTransition(route, function () {
+      this$1.index = targetIndex;
+      this$1.updateRoute(route);
+    });
+  };
+
+  AbstractHistory.prototype.getCurrentLocation = function getCurrentLocation () {
+    var current = this.stack[this.stack.length - 1];
+    return current ? current.fullPath : '/'
+  };
+
+  AbstractHistory.prototype.ensureURL = function ensureURL () {
+    // noop
+  };
+
+  return AbstractHistory;
+}(History));
+
+/*  */
+
 var MagixRouter = function MagixRouter (options) {
   if ( options === void 0 ) options = {};
 
@@ -2437,6 +2496,9 @@ var MagixRouter = function MagixRouter (options) {
       break
     case 'hash':
       this.history = new HashHistory(this, options.base, this.fallback);
+      break
+    case 'abstract':
+      this.history = new AbstractHistory(this, options.base);
       break
     default:
       if (process.env.NODE_ENV !== 'production') {
@@ -2603,7 +2665,7 @@ function createHref (base, fullPath, mode) {
 }
 
 MagixRouter.install = install;
-MagixRouter.version = '0.0.23';
+MagixRouter.version = '0.0.24';
 
 MagixRouter.createRoute = createRoute;
 MagixRouter.isSameRoute = isSameRoute;
