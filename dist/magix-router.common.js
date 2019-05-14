@@ -1,5 +1,5 @@
 /*!
-  * magix-router v0.0.24
+  * magix-router v0.0.25
   * (c) 2019 sprying
   * @license MIT
   */
@@ -2552,6 +2552,8 @@ MagixRouter.prototype.init = function init (app) {
       setupHashListener,
       setupHashListener
     );
+  } else {
+    history.transitionTo(history.getCurrentLocation());
   }
 
   history.listen(function (changedInfo) {
@@ -2667,7 +2669,7 @@ function createHref (base, fullPath, mode) {
 }
 
 MagixRouter.install = install;
-MagixRouter.version = '0.0.24';
+MagixRouter.version = '0.0.25';
 
 MagixRouter.createRoute = createRoute;
 MagixRouter.isSameRoute = isSameRoute;
