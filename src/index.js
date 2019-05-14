@@ -11,6 +11,7 @@ import { supportsPushState } from './util/push-state'
 
 import { HashHistory } from './history/hash'
 import { HTML5History } from './history/html5'
+import { AbstractHistory } from './history/abstract'
 
 import type { Matcher } from './create-matcher'
 
@@ -58,6 +59,9 @@ export default class MagixRouter {
         break
       case 'hash':
         this.history = new HashHistory(this, options.base, this.fallback)
+        break
+      case 'abstract':
+        this.history = new AbstractHistory(this, options.base)
         break
       default:
         if (process.env.NODE_ENV !== 'production') {
@@ -265,13 +269,14 @@ const VframeUpdate = function (vframe, changeInfo, route) {
       isChanged = true
     }
 
-    if (isChanged && !parentsHasOne(changeInfo.mountedVframes, vframe)) {
+    if (isChanged) {
       clearLink(vframe.id)
       view['render']()
-    }
-    const cs = vframe.children()
-    for (var _i = 0; _i < cs.length; _i++) {
-      VframeUpdate(Vframe.get(cs[_i]), changeInfo, route)
+    } else {
+      const cs = vframe.children()
+      for (var _i = 0; _i < cs.length; _i++) {
+        VframeUpdate(Vframe.get(cs[_i]), changeInfo, route)
+      }
     }
   }
 }

@@ -1,6 +1,6 @@
 /*!
   * magix-router v0.0.23
-  * (c) 2018 sprying
+  * (c) 2019 sprying
   * @license MIT
   */
 (function (global, factory) {
@@ -2619,22 +2619,6 @@ if (inBrowser && window.Magix) {
   MagixRouter.install(window.Magix);
 }
 
-var parentsHasOne = function (vframes, target) {
-  var has = false;
-  while(target) {
-    vframes.forEach(function (item) {
-      if (item === target.id) {
-        has = true;
-      }
-    });
-    if (has) {
-      break
-    }
-    target = target.parent();
-  }
-  return has
-};
-
 var VframeUpdate = function (vframe, changeInfo, route) {
   var Vframe = _Magix.Vframe;
   var view;
@@ -2648,13 +2632,14 @@ var VframeUpdate = function (vframe, changeInfo, route) {
       isChanged = true;
     }
 
-    if (isChanged && !parentsHasOne(changeInfo.mountedVframes, vframe)) {
+    if (isChanged) {
       clearLink(vframe.id);
       view['render']();
-    }
-    var cs = vframe.children();
-    for (var _i = 0; _i < cs.length; _i++) {
-      VframeUpdate(Vframe.get(cs[_i]), changeInfo, route);
+    } else {
+      var cs = vframe.children();
+      for (var _i = 0; _i < cs.length; _i++) {
+        VframeUpdate(Vframe.get(cs[_i]), changeInfo, route);
+      }
     }
   }
 };

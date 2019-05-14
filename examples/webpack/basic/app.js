@@ -29,7 +29,7 @@ const Bar = Magix.View.extend({
 
 // 3. Create the router
 const router = new MagixRouter({
-  mode: 'history',
+  mode: 'abstract',
   base: __dirname,
   routes: [
     { path: '/', view: Home },
