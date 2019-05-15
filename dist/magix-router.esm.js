@@ -1,5 +1,5 @@
 /*!
-  * magix-router v0.0.26
+  * magix-router v0.0.27
   * (c) 2019 sprying
   * @license MIT
   */
@@ -1939,9 +1939,9 @@ History.prototype.confirmTransition = function confirmTransition (route, onCompl
     onAbort && onAbort(err);
   };
   if (
-    isSameRoute(route, current) &&
+    !this.stack && (isSameRoute(route, current) &&
     // in the case the route map has been dynamically appended to
-    route.matched.length === current.matched.length
+    route.matched.length === current.matched.length)
   ) {
     this.ensureURL();
     return abort()
@@ -2418,7 +2418,7 @@ var AbstractHistory = (function (History$$1) {
   function AbstractHistory (router, base) {
     History$$1.call(this, router, base);
     this.stack = [];
-    this.index = 0;
+    this.index = -1;
   }
 
   if ( History$$1 ) AbstractHistory.__proto__ = History$$1;
@@ -2551,7 +2551,7 @@ MagixRouter.prototype.init = function init (app) {
       setupHashListener
     );
   } else {
-    history.transitionTo(history.getCurrentLocation());
+    history.push(history.getCurrentLocation());
   }
 
   history.listen(function (changedInfo) {
@@ -2667,7 +2667,7 @@ function createHref (base, fullPath, mode) {
 }
 
 MagixRouter.install = install;
-MagixRouter.version = '0.0.26';
+MagixRouter.version = '0.0.27';
 
 MagixRouter.createRoute = createRoute;
 MagixRouter.isSameRoute = isSameRoute;
