@@ -10,7 +10,7 @@ export class AbstractHistory extends History {
   constructor (router: Router, base: ?string) {
     super(router, base)
     this.stack = []
-    this.index = 0
+    this.index = -1
   }
 
   push (location: RawLocation, onComplete?: Function, onAbort?: Function) {

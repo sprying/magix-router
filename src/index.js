@@ -110,7 +110,7 @@ export default class MagixRouter {
         setupHashListener
       )
     } else {
-      history.transitionTo(history.getCurrentLocation())
+      history.push(history.getCurrentLocation())
     }
 
     history.listen(changedInfo => {

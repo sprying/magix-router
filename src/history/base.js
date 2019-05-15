@@ -98,9 +98,9 @@ export class History {
       onAbort && onAbort(err)
     }
     if (
-      isSameRoute(route, current) &&
+      !this.stack && (isSameRoute(route, current) &&
       // in the case the route map has been dynamically appended to
-      route.matched.length === current.matched.length
+      route.matched.length === current.matched.length)
     ) {
       this.ensureURL()
       return abort()
