@@ -1,5 +1,5 @@
 /*!
-  * magix-router v0.0.25
+  * magix-router v0.0.26
   * (c) 2019 sprying
   * @license MIT
   */
@@ -2420,7 +2420,7 @@ var AbstractHistory = (function (History$$1) {
   function AbstractHistory (router, base) {
     History$$1.call(this, router, base);
     this.stack = [];
-    this.index = -1;
+    this.index = 0;
   }
 
   if ( History$$1 ) AbstractHistory.__proto__ = History$$1;
@@ -2669,7 +2669,7 @@ function createHref (base, fullPath, mode) {
 }
 
 MagixRouter.install = install;
-MagixRouter.version = '0.0.25';
+MagixRouter.version = '0.0.26';
 
 MagixRouter.createRoute = createRoute;
 MagixRouter.isSameRoute = isSameRoute;
