@@ -1,3 +1,6 @@
+*2019-06-02 # v0.0.27
+1. fix throwing error when one special scene
+
 * 2018-09-07 # v0.0.20
 1. fix html5 router replace's bug
 
