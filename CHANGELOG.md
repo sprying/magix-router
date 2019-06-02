@@ -1,4 +1,4 @@
-*2019-06-02 # v0.0.27
+*2019-06-02 # v0.0.28
 1. fix throwing error when one special scene
 
 * 2018-09-07 # v0.0.20

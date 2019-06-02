@@ -1,5 +1,5 @@
 /*!
-  * magix-router v0.0.27
+  * magix-router v0.0.28
   * (c) 2019 sprying
   * @license MIT
   */
@@ -2528,8 +2528,6 @@ prototypeAccessors.currentRoute.get = function () {
 };
 
 MagixRouter.prototype.init = function init (app) {
-    var this$1 = this;
-
   "development" !== 'production' && assert(
     install.installed,
     "not installed. Make sure to call `MagixRouter.install(Magix)` " +
@@ -2564,7 +2562,9 @@ MagixRouter.prototype.init = function init (app) {
     // 触发变动更新
     var Vframe = _Magix.Vframe;
     var rootVframe = Vframe.get(_Magix.config('rootId'));
-    VframeUpdate(rootVframe, changedInfo, this$1.history.current);
+    try {
+      VframeUpdate(rootVframe, changedInfo, this$1.history.current);
+    } catch (e) {}
     update$1();
   });
 };
@@ -2673,7 +2673,7 @@ function createHref (base, fullPath, mode) {
 }
 
 MagixRouter.install = install;
-MagixRouter.version = '0.0.27';
+MagixRouter.version = '0.0.28';
 
 MagixRouter.createRoute = createRoute;
 MagixRouter.isSameRoute = isSameRoute;
