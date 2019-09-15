@@ -1,5 +1,5 @@
 /*!
-  * magix-router v0.0.28
+  * magix-router v0.0.29
   * (c) 2019 sprying
   * @license MIT
   */
@@ -2522,6 +2522,8 @@ prototypeAccessors.currentRoute.get = function () {
 };
 
 MagixRouter.prototype.init = function init (app) {
+    var this$1 = this;
+
   process.env.NODE_ENV !== 'production' && assert(
     install.installed,
     "not installed. Make sure to call `MagixRouter.install(Magix)` " +
@@ -2667,7 +2669,7 @@ function createHref (base, fullPath, mode) {
 }
 
 MagixRouter.install = install;
-MagixRouter.version = '0.0.28';
+MagixRouter.version = '0.0.29';
 
 MagixRouter.createRoute = createRoute;
 MagixRouter.isSameRoute = isSameRoute;
