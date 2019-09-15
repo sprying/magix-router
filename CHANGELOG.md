@@ -1,3 +1,6 @@
+*2019-09-15 # v0.0.29
+1. fix typo
+
 *2019-06-02 # v0.0.28
 1. fix throwing error when one special scene
 

@@ -118,7 +118,7 @@ export default class MagixRouter {
       const Vframe = _Magix.Vframe
       const rootVframe = Vframe.get(_Magix.config('rootId'))
       try {
-        VframeUpdate(rootVframe, changedInfo, this$1.history.current);
+        VframeUpdate(rootVframe, changedInfo, this.history.current);
       } catch (e) {}
       updateLinks();
     })
