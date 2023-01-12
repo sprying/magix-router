@@ -55,7 +55,7 @@
     "flow-bin": "^0.56.0",
     "jasmine": "2.8.0",
     "magix-combine": "^3.8.9",
-    "mat": "^0.1.29",
+    "mat": "^1.0.20",
     "mat-magix-analyse": "^1.0.1",
     "mat-rewrite-types": "^1.0.0",
     "nightwatch": "^0.9.5",
